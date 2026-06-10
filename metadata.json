@@ -1,0 +1,6 @@
+{
+  "name": "Avenzo Official Store",
+  "description": "Premium luxury e-commerce website for Pakistan, featuring high-end tech catalogs, interactive suite configurators, live logistics tracking, accounts, and admin systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

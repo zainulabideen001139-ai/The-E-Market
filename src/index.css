@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-sans-inter {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Custom premium variables and styling elements */
+:root {
+  --gold-accent: #C5A059;
+  --gold-hover: #DFBA73;
+  --bg-dark: #0A0A0A;
+  --bg-paper: #141414;
+  --border-gold: rgba(197, 160, 89, 0.25);
+}
+
+/* Customized thin premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+/* Animations helper */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.15);
+  transition: all 0.3s ease;
+}
+
+.gold-border-glow:hover {
+  box-shadow: 0 0 12px 1px rgba(197, 160, 89, 0.35);
+  border-color: #C5A059;
+}
+
