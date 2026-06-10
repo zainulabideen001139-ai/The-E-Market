@@ -15,6 +15,9 @@ import {
   HelpCircle, ChevronDown, Check, Info, ShieldCheck, Heart, AlertCircle, ShoppingBag, ArrowRight
 } from 'lucide-react';
 
+import { products as localProducts } from './products';
+import { INITIAL_CATEGORIES } from './data';
+
 // Standard fallback catalog items in case server fails to fetch immediately
 const FALLBACK_CATEGORIES = [
   { id: 'electronics', name: 'Electronics & Computing' },
@@ -23,12 +26,66 @@ const FALLBACK_CATEGORIES = [
   { id: 'fitness-mobility', name: 'Fitness & Mobility' }
 ];
 
+const INITIAL_ORDERS_DATA: Order[] = [
+  {
+    id: 'AVN-9821-LH',
+    customerName: 'Muhammad Haris',
+    customerEmail: 'haris.lhr@gmail.com',
+    customerPhone: '+92-321-4567890',
+    shippingAddress: 'House 54-A, Block H3, Johar Town',
+    city: 'Lahore',
+    items: [
+      {
+        product: localProducts[0],
+        quantity: 1
+      }
+    ],
+    totalAmount: 119999,
+    paymentMethod: 'Cash on Delivery',
+    status: 'Shipped',
+    trackingNumber: 'TRK-AVN-807921',
+    createdAt: '2026-06-08T11:20:00Z'
+  },
+  {
+    id: 'AVN-7155-KB',
+    customerName: 'Zainab Fatima',
+    customerEmail: 'zainab.khi@gmail.com',
+    customerPhone: '+92-333-8765432',
+    shippingAddress: 'Apartment 12, Parkview Heights, Clifton Complex',
+    city: 'Karachi',
+    items: [
+      {
+        product: localProducts[17],
+        quantity: 1
+      },
+      {
+        product: localProducts[19],
+        quantity: 1
+      }
+    ],
+    totalAmount: 144998,
+    paymentMethod: 'Bank Transfer',
+    status: 'Pending',
+    trackingNumber: 'TRK-AVN-936154',
+    createdAt: '2026-06-09T18:45:00Z'
+  }
+];
+
 export default function App() {
   // Global States
   const [activePage, setActivePage] = useState<ActivePage>('home');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [products, setProducts] = useState<Product[]>(() => {
+    const saved = localStorage.getItem('avenzo_products');
+    return saved ? JSON.parse(saved) : localProducts;
+  });
+  const [categories, setCategories] = useState<Category[]>(() => {
+    const saved = localStorage.getItem('avenzo_categories');
+    return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
+  });
+  const [orders, setOrders] = useState<Order[]>(() => {
+    const saved = localStorage.getItem('avenzo_orders');
+    return saved ? JSON.parse(saved) : INITIAL_ORDERS_DATA;
+  });
   
   // Sorting/Filtering
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,35 +122,32 @@ export default function App() {
   // FAQ accordion active IDs
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(0);
 
-  // 1. DATA SYNCHRONIZATION FROM DYNAMIC BACKEND SERVER
+  // 1. DATA SYNCHRONIZATION FROM DYNAMIC BACKEND SERVER (Orders only, client-side is source of truth for products)
   const fetchData = async () => {
     try {
-      const prodResp = await fetch('/api/products');
-      if (prodResp.ok) {
-        const prodData = await prodResp.json();
-        setProducts(prodData);
-      }
-      
-      const catResp = await fetch('/api/categories');
-      if (catResp.ok) {
-        const catData = await catResp.json();
-        setCategories(catData);
-      }
-
       const ordResp = await fetch('/api/orders');
       if (ordResp.ok) {
         const ordData = await ordResp.json();
-        setOrders(ordData);
+        // Fallback merged tracking sync
+        setOrders(prev => {
+          const merged = [...prev];
+          ordData.forEach((rem: Order) => {
+            if (!merged.find(m => m.id === rem.id)) {
+              merged.push(rem);
+            }
+          });
+          return merged;
+        });
       }
     } catch (err) {
-      console.log('Server fetch offline, proceeding with native memory preloads.');
+      console.log('Server fetch offline, proceeding with local memory persistence.');
     }
   };
 
   useEffect(() => {
     fetchData();
     // Run sync checks
-    const interval = setInterval(fetchData, 8000);
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -105,6 +159,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('avenzo_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
+
+  useEffect(() => {
+    localStorage.setItem('avenzo_products', JSON.stringify(products));
+  }, [products]);
+
+  useEffect(() => {
+    localStorage.setItem('avenzo_categories', JSON.stringify(categories));
+  }, [categories]);
+
+  useEffect(() => {
+    localStorage.setItem('avenzo_orders', JSON.stringify(orders));
+  }, [orders]);
 
   useEffect(() => {
     if (currentUser) {
@@ -219,89 +285,184 @@ export default function App() {
     });
   };
 
-  // REVIEWS SUBMISSION CONNECTED TO SERVER
+  // REVIEWS SUBMISSION CONNECTED TO LOCAL STATE
   const handleAddReview = async (productId: string, name: string, rating: number, comment: string) => {
-    const resp = await fetch(`/api/products/${productId}/reviews`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, rating, comment })
+    const newReview = {
+      id: 'rev-' + Date.now(),
+      name,
+      rating: Number(rating),
+      comment,
+      date: new Date().toISOString().split('T')[0]
+    };
+    
+    setProducts((prevProducts) => {
+      const updated = prevProducts.map((p) => {
+        if (p.id === productId) {
+          const reviews = p.reviews || [];
+          const updatedReviews = [...reviews, newReview];
+          const reviewsCount = updatedReviews.length;
+          const avgRating = Number(
+            (updatedReviews.reduce((sum, r) => sum + r.rating, 0) / reviewsCount).toFixed(1)
+          );
+          const updatedProd = {
+            ...p,
+            reviews: updatedReviews,
+            reviewsCount,
+            rating: avgRating
+          };
+          
+          // Sync with the selected item details modal live view
+          setTimeout(() => setSelectedProduct(updatedProd), 0);
+          return updatedProd;
+        }
+        return p;
+      });
+      return updated;
     });
-    if (resp.ok) {
-      await fetchData();
-      // Update modal selected details live to reflect new average ratings instantly
-      const updated = products.find((p) => p.id === productId);
-      if (updated) {
-        setSelectedProduct(updated);
-      }
-    } else {
-      throw new Error('Review failed');
+    
+    // Attempt background API post for matching server sync but do not block or crash on error
+    try {
+      await fetch(`/api/products/${productId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, rating, comment })
+      });
+    } catch (e) {
+      console.log('Server review post skipped, running in robust offline state mode.');
     }
   };
 
   // CHECKOUT PORTAL COUPLING
   const handleCheckoutSubmit = async (orderDetails: any) => {
-    const resp = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderDetails)
+    const orderId = 'AVN-' + Math.floor(1000 + Math.random() * 9000) + '-' + ['LH', 'KHI', 'ISD', 'PE'][Math.floor(Math.random() * 4)];
+    const trackingNumber = 'TRK-AVN-' + Math.floor(100000 + Math.random() * 900000);
+
+    const newOrder: Order = {
+      id: orderId,
+      customerName: orderDetails.customerName,
+      customerEmail: orderDetails.customerEmail,
+      customerPhone: orderDetails.customerPhone,
+      shippingAddress: orderDetails.shippingAddress,
+      city: orderDetails.city,
+      items: orderDetails.items,
+      totalAmount: Number(orderDetails.totalAmount),
+      paymentMethod: orderDetails.paymentMethod,
+      status: 'Pending',
+      trackingNumber,
+      createdAt: new Date().toISOString()
+    };
+
+    // Decrement stock levels locally
+    setProducts((prevProducts) => {
+      return prevProducts.map((p) => {
+        const item = orderDetails.items.find((it: any) => it.product.id === p.id);
+        if (item) {
+          return {
+            ...p,
+            stock: Math.max(0, p.stock - item.quantity)
+          };
+        }
+        return p;
+      });
     });
-    if (resp.ok) {
-      const data = await resp.json();
-      await fetchData();
-      return data;
-    } else {
-      throw new Error('Order creation rejected');
+
+    setOrders((prev) => [...prev, newOrder]);
+
+    // Background server post sync
+    try {
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderDetails)
+      });
+    } catch (e) {
+      console.log('Server order sync skipped, placed locally.');
     }
+
+    return { order: newOrder };
   };
 
   // ADMINISTRATIVE MUTATORS
   const handleAddProduct = async (payload: any) => {
-    const resp = await fetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (resp.ok) {
-      await fetchData();
-    } else {
-      throw new Error('Failure creating product');
+    const newProduct: Product = {
+      id: 'prod-' + Date.now(),
+      name: payload.name,
+      category: payload.category,
+      price: Number(payload.price),
+      description: payload.description || 'Premium product designed by Avenzo Official Store.',
+      sku: payload.sku || ('AVN-' + Math.floor(Math.random() * 10000)),
+      stock: Number(payload.stock) || 10,
+      isFeatured: !!payload.isFeatured,
+      imageUrl: payload.imageUrl || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop',
+      specifications: payload.specifications || [],
+      rating: 5.0,
+      reviewsCount: 0,
+      reviews: []
+    };
+    
+    setProducts((prev) => [newProduct, ...prev]);
+
+    try {
+      await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.log('Server creation bypassed.');
     }
   };
 
   const handleUpdateProduct = async (id: string, payload: any) => {
-    const resp = await fetch(`/api/products/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (resp.ok) {
-      await fetchData();
-    } else {
-      throw new Error('Failure updating product');
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              ...payload,
+              price: payload.price !== undefined ? Number(payload.price) : p.price,
+              stock: payload.stock !== undefined ? Number(payload.stock) : p.stock
+            }
+          : p
+      )
+    );
+
+    try {
+      await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.log('Server update bypassed.');
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
-    const resp = await fetch(`/api/products/${id}`, {
-      method: 'DELETE'
-    });
-    if (resp.ok) {
-      await fetchData();
-    } else {
-      throw new Error('Failure deleting product');
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+
+    try {
+      await fetch(`/api/products/${id}`, {
+        method: 'DELETE'
+      });
+    } catch (e) {
+      console.log('Server deletion bypassed.');
     }
   };
 
   const handleUpdateOrderStatus = async (id: string, status: OrderStatus) => {
-    const resp = await fetch(`/api/orders/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
-    });
-    if (resp.ok) {
-      await fetchData();
-    } else {
-      throw new Error('Failure updating order state');
+    setOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, status } : o))
+    );
+
+    try {
+      await fetch(`/api/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+    } catch (e) {
+      console.log('Server order update bypassed.');
     }
   };
 

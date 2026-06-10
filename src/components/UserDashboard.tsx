@@ -86,12 +86,26 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     setIsTracking(true);
     setFoundOrders(null);
     try {
-      const resp = await fetch(`/api/orders/track/${encodeURIComponent(trackQuery.trim())}`);
-      if (resp.ok) {
-        const data = await resp.json();
-        setFoundOrders(data);
+      const queryStr = trackQuery.trim().toLowerCase();
+      // Look up locally first from passed orders list
+      const matches = orders.filter(
+        (o) =>
+          o.id.toLowerCase() === queryStr ||
+          o.id.replaceAll('-', '').toLowerCase() === queryStr ||
+          o.customerEmail.toLowerCase() === queryStr ||
+          o.trackingNumber.toLowerCase() === queryStr
+      );
+
+      if (matches.length > 0) {
+        setFoundOrders(matches);
       } else {
-        setFoundOrders([]);
+        const resp = await fetch(`/api/orders/track/${encodeURIComponent(trackQuery.trim())}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          setFoundOrders(data);
+        } else {
+          setFoundOrders([]);
+        }
       }
     } catch (err) {
       console.error(err);
