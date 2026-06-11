@@ -43,7 +43,7 @@ export interface Order {
   city: string;
   items: CartItem[];
   totalAmount: number;
-  paymentMethod: 'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa' | 'Stripe' | 'PayPal' | 'Verifone (2Checkout)';
+  paymentMethod: 'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa' | 'Stripe' | 'PayPal' | 'Verifone (2Checkout)' | 'Credit / Debit Card (Safepay)';
   status: OrderStatus;
   trackingNumber: string;
   createdAt: string;
@@ -83,4 +83,7 @@ export type ActivePage =
   | 'shipping-policy'
   | 'refund-policy'
   | 'account'
-  | 'admin';
+  | 'admin'
+  | 'safepay-verify'
+  | 'safepay-cancel'
+  | 'safepay-simulator';

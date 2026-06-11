@@ -730,7 +730,201 @@ app.post('/api/orders', (req, res) => {
   res.status(201).json({ order: newOrder, EmailSimulated: emailMessage });
 });
 
+// Safepay integration memory map for temporary storing draft orders during redirect
+const PENDING_SAFEPAY_ORDERS = new Map<string, any>();
 
+// 4a. Safepay Payment Creation API
+app.post('/api/payments/safepay/create', async (req, res) => {
+  const { customerName, customerEmail, customerPhone, shippingAddress, city, items, totalAmount, notes } = req.body;
+  
+  if (!customerName || !customerEmail || !customerPhone || !shippingAddress || !city || !items || items.length === 0) {
+    return res.status(400).json({ error: 'Incomplete shipping credentials or cart payload.' });
+  }
+
+  // Verify stock before sending to payment gateway
+  for (const item of items) {
+    const product = DATA_STORE.products.find(p => p.id === item.product.id);
+    if (product) {
+      if (product.stock < item.quantity) {
+        return res.status(400).json({ error: `Limited Luxury Reserves. Only ${product.stock} units of ${product.name} are available.` });
+      }
+    }
+  }
+
+  const orderId = 'AVN-' + Math.floor(1000 + Math.random() * 9000) + '-' + ['LH', 'KHI', 'ISD', 'PE'][Math.floor(Math.random() * 4)];
+  const trackingNumber = 'TRK-AVN-' + Math.floor(100000 + Math.random() * 900000);
+
+  const draftOrder = {
+    customerName,
+    customerEmail,
+    customerPhone,
+    shippingAddress,
+    city,
+    items,
+    totalAmount: Number(totalAmount),
+    paymentMethod: 'Credit / Debit Card (Safepay)',
+    notes: notes || '',
+  };
+
+  const publicKey = process.env.SAFEPAY_PUBLIC_KEY;
+  const secretKey = process.env.SAFEPAY_SECRET_KEY || process.env.SAFEPAY_V1_SECRET;
+  const isProdOrSandbox = !!(publicKey && secretKey);
+
+  if (isProdOrSandbox) {
+    try {
+      // Create tracker on Safepay API
+      const apiRes = await fetch('https://sandbox.api.getsafepay.com/order/v1/init', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          client: publicKey,
+          amount: Number(totalAmount),
+          currency: 'PKR'
+        })
+      });
+
+      if (!apiRes.ok) {
+        const errorText = await apiRes.text();
+        throw new Error(`Safepay init error: ${apiRes.status} - ${errorText}`);
+      }
+
+      const jsonResponse: any = await apiRes.json();
+      const token = jsonResponse.data && jsonResponse.data.token;
+
+      if (!token) {
+        throw new Error('No voucher/tracker token returned from Safepay API.');
+      }
+
+      // Store drafting details referencing this token
+      PENDING_SAFEPAY_ORDERS.set(token, {
+        orderId,
+        trackingNumber,
+        draftOrder
+      });
+
+      const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+      const host = req.get('host');
+      const redirectUrl = `${protocol}://${host}/payment-verify`;
+      const cancelUrl = `${protocol}://${host}/payment-cancel`;
+
+      // Construct official sandbox checkout link
+      const checkoutUrl = `https://sandbox.getsafepay.com/checkout/pay?beacon=${publicKey}&token=${token}&order_id=${orderId}&redirect_url=${encodeURIComponent(redirectUrl)}&cancel_url=${encodeURIComponent(cancelUrl)}&source=custom`;
+
+      res.status(200).json({ checkoutUrl });
+    } catch (err: any) {
+      console.error('Safepay Error:', err);
+      res.status(500).json({ error: 'Failed to create Safepay transaction link: ' + err.message });
+    }
+  } else {
+    // Sandbox simulation demo-mode fallback for testing inside preview iframe
+    const mockToken = 'mock_track_' + Math.random().toString(36).substring(2, 15);
+    
+    PENDING_SAFEPAY_ORDERS.set(mockToken, {
+      orderId,
+      trackingNumber,
+      draftOrder
+    });
+
+    // Simulated checkout component path
+    const checkoutUrl = `/payment-simulator?token=${mockToken}&order_id=${orderId}&amount=${totalAmount}`;
+    res.status(200).json({ checkoutUrl });
+  }
+});
+
+// 4b. Safepay Payment Verification API
+app.get('/api/payments/safepay/verify', (req, res) => {
+  const { tracker, token, sig } = req.query;
+  const trackerToken = (tracker || token) as string;
+
+  if (!trackerToken) {
+    return res.status(400).json({ error: 'Incomplete transaction parameters.' });
+  }
+
+  const pendingData = PENDING_SAFEPAY_ORDERS.get(trackerToken);
+  if (!pendingData) {
+    return res.status(404).json({ error: 'Consignment / order token has expired or is invalid.' });
+  }
+
+  const isMock = trackerToken.startsWith('mock_track_');
+  const secretKey = process.env.SAFEPAY_SECRET_KEY || process.env.SAFEPAY_V1_SECRET;
+
+  if (!isMock) {
+    if (!secretKey) {
+      return res.status(500).json({ error: 'Merchant secret credentials missing in server config.' });
+    }
+
+    // Verify sha256 signature
+    const computedSig = crypto
+      .createHmac('sha256', secretKey)
+      .update(trackerToken)
+      .digest('hex');
+
+    if (computedSig !== sig) {
+      return res.status(400).json({ error: 'Authentic secure signature check failed.' });
+    }
+  }
+
+  // Signature / simulator cleared! Realize order, deduct stocks
+  const { orderId, trackingNumber, draftOrder } = pendingData;
+
+  // Final check & decrement stock
+  for (const item of draftOrder.items) {
+    const product = DATA_STORE.products.find(p => p.id === item.product.id);
+    if (product) {
+      if (product.stock < item.quantity) {
+        return res.status(400).json({ error: `Reservation error: ${product.name} is now out of stock.` });
+      }
+      product.stock -= item.quantity;
+    }
+  }
+
+  // Create real persistent order
+  const finalizedOrder = {
+    id: orderId,
+    customerName: draftOrder.customerName,
+    customerEmail: draftOrder.customerEmail,
+    customerPhone: draftOrder.customerPhone,
+    shippingAddress: draftOrder.shippingAddress,
+    city: draftOrder.city,
+    items: draftOrder.items,
+    totalAmount: Number(draftOrder.totalAmount),
+    paymentMethod: draftOrder.paymentMethod as any,
+    status: 'Pending' as const,
+    trackingNumber,
+    createdAt: new Date().toISOString()
+  };
+
+  DATA_STORE.orders.push(finalizedOrder);
+  persistData();
+
+  // Clear tracking key
+  PENDING_SAFEPAY_ORDERS.delete(trackerToken);
+
+  // Email layout dispatch mock
+  const emailMessage = {
+    to: draftOrder.customerEmail,
+    subject: `Order Authorized - ${orderId} | Avenzo Official Store`,
+    body: `
+      Dear ${draftOrder.customerName},
+
+      We have successfully verified your card payment of PKR ${Number(draftOrder.totalAmount).toLocaleString()} via Safepay!
+      
+      Your premium luxury purchase order ${orderId} has been successfully custom queued and authorized.
+      
+      Your Cargo Tracking code is: ${trackingNumber}
+      We are preparing to ship items to:
+      ${draftOrder.shippingAddress}, ${draftOrder.city}, Pakistan.
+
+      Warmest Regards,
+      Team Avenzo Official
+      support@avenzo.pk
+    `
+  };
+
+  res.status(200).json({ success: true, order: finalizedOrder, EmailSimulated: emailMessage });
+});
 
 app.put('/api/orders/:id', (req, res) => {
   const { id } = req.params;

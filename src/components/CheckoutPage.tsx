@@ -29,7 +29,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [discountPercent, setDiscountPercent] = useState(0);
 
   // Payment states
-  const [paymentMethod, setPaymentMethod] = useState<'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa'>('Cash on Delivery');
+  const [paymentMethod, setPaymentMethod] = useState<'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa' | 'Credit / Debit Card (Safepay)'>('Cash on Delivery');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<any | null>(null);
   const [simulatedEmail, setSimulatedEmail] = useState<any | null>(null);
@@ -79,10 +79,16 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       items: cart,
       totalAmount: totalInvoicedAmount,
       paymentMethod,
+      notes,
     };
 
     try {
       const resp = await onSubmitOrder(payload);
+      if (resp && resp.checkoutUrl) {
+        // Redirect the customer to the Safepay checkout or simulator URL
+        window.location.href = resp.checkoutUrl;
+        return;
+      }
       if (resp && resp.order) {
         setCompletedOrder(resp.order);
         if (resp.EmailSimulated) {
@@ -348,19 +354,33 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   <span className="text-[10px] uppercase tracking-wider font-bold">Easypaisa Wallet</span>
                 </button>
 
-                <div
-                  className="border border-gray-150 bg-gray-50/50 p-3.5 flex flex-col justify-between h-20 text-left rounded-xl relative opacity-50 cursor-not-allowed select-none"
-                  title="Online Processing under standard maintenance"
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('Credit / Debit Card (Safepay)')}
+                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-xl transition-all cursor-pointer ${
+                    paymentMethod === 'Credit / Debit Card (Safepay)' 
+                      ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 font-bold' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
+                  }`}
                 >
-                  <CreditCard size={16} className="text-gray-400" />
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 block leading-tight">Card Channels</span>
-                    <span className="text-[8px] text-gray-400 font-mono">DEVELOPING</span>
-                  </div>
-                </div>
+                  <CreditCard size={16} />
+                  <span className="text-[10px] uppercase tracking-wider font-bold">Credit/Debit Card (Safepay)</span>
+                </button>
               </div>
 
               {/* DYNAMIC PAYMENT PARAMETERS */}
+              {paymentMethod === 'Credit / Debit Card (Safepay)' && (
+                <div className="bg-indigo-50/30 p-4 border border-indigo-100 rounded-xl space-y-2 text-xs text-gray-600">
+                  <span className="text-indigo-850 text-indigo-800 font-bold uppercase tracking-wide block font-sans">Secure Safepay Sandbox Gateway</span>
+                  <p className="font-medium font-sans text-gray-600">
+                    Your card parameters are fully enciphered. You will be redirected to Safepay's secure sandbox server to complete this purchase securely.
+                  </p>
+                  <span className="text-[10px] text-emerald-600 font-mono font-bold block pt-1">
+                    ✓ PCI-DSS Compliant Secure Acquiring Channel
+                  </span>
+                </div>
+              )}
+
               {paymentMethod === 'Cash on Delivery' && (
                 <div className="bg-emerald-50/30 p-4 border border-emerald-100 rounded-xl space-y-2 text-xs text-gray-600">
                   <span className="text-emerald-800 font-bold uppercase tracking-wide block font-sans">Cash on Delivery Verification</span>

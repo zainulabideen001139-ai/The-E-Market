@@ -10,9 +10,11 @@ import { CheckoutPage } from './components/CheckoutPage';
 import { UserDashboard } from './components/UserDashboard';
 import { AvenzoSuiteCurator } from './components/AvenzoSuiteCurator';
 import { AvenzoTransitTracker } from './components/AvenzoTransitTracker';
+import { SafepayVerificationScreen } from './components/SafepayVerificationScreen';
+import { SafepayCancelScreen } from './components/SafepayCancelScreen';
 import { 
   Building, Landmark, Mail, Phone, MapPin, Sparkles, Filter, 
-  HelpCircle, ChevronDown, Check, Info, ShieldCheck, Heart, AlertCircle, ShoppingBag, ArrowRight
+  HelpCircle, ChevronDown, Check, Info, ShieldCheck, Heart, AlertCircle, ShoppingBag, ArrowRight, CreditCard
 } from 'lucide-react';
 
 import { products as localProducts } from './products';
@@ -149,6 +151,20 @@ export default function App() {
     // Run sync checks
     const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Intercept Safepay URL routing params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pathname = window.location.pathname;
+
+    if (pathname === '/payment-verify' || params.has('tracker') || params.has('token')) {
+      setActivePage('safepay-verify');
+    } else if (pathname === '/payment-cancel' || params.has('payment_cancel')) {
+      setActivePage('safepay-cancel');
+    } else if (pathname === '/payment-simulator') {
+      setActivePage('safepay-simulator');
+    }
   }, []);
 
   // Sync state values back into Client Persistence elements
@@ -334,6 +350,28 @@ export default function App() {
 
   // CHECKOUT PORTAL COUPLING
   const handleCheckoutSubmit = async (orderDetails: any) => {
+    if (orderDetails.paymentMethod === 'Credit / Debit Card (Safepay)') {
+      try {
+        const response = await fetch('/api/payments/safepay/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderDetails)
+        });
+        if (response.ok) {
+          const respData = await response.json();
+          return { checkoutUrl: respData.checkoutUrl };
+        } else {
+          const errData = await response.json();
+          alert(errData.error || 'Acquisition initializer failed.');
+          return null;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Platform connection to payments gateway failed.');
+        return null;
+      }
+    }
+
     const orderId = 'AVN-' + Math.floor(1000 + Math.random() * 9000) + '-' + ['LH', 'KHI', 'ISD', 'PE'][Math.floor(Math.random() * 4)];
     const trackingNumber = 'TRK-AVN-' + Math.floor(100000 + Math.random() * 900000);
 
@@ -968,6 +1006,113 @@ export default function App() {
             onClearCart={() => setCart([])}
             onSubmitOrder={handleCheckoutSubmit}
           />
+        )}
+
+        {/* SAFEPAY SECURE SANDBOX SIMULATOR SCREEN */}
+        {activePage === 'safepay-simulator' && (
+          <div className="max-w-md mx-auto my-12 bg-white border border-gray-200 rounded-3xl p-8 shadow-2xl font-sans text-gray-700 animate-fade-in space-y-6">
+            <div className="text-center space-y-2 border-b border-gray-100 pb-4">
+              <div className="flex justify-center items-center gap-1.5 text-indigo-600 font-bold tracking-tight">
+                <span className="p-1 px-2.5 bg-indigo-600 text-white text-xs rounded-lg font-mono font-black shadow-xs">S</span>
+                <span className="text-sm font-sans tracking-wide uppercase font-black text-gray-950">safepay</span>
+                <span className="text-[9px] text-gray-400 font-extrabold px-1.5 py-0.5 bg-gray-100 rounded-md font-mono uppercase tracking-wider">sandbox</span>
+              </div>
+              <p className="text-xs text-gray-400 font-medium">Bespoke Portal Authorization Simulator</p>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-100 text-amber-900 rounded-xl p-4 text-xs leading-relaxed space-y-1">
+              <p className="font-bold flex items-center gap-1"><Info size={14} /> Safepay Developer Sandbox Simulation</p>
+              <p className="text-gray-650 font-medium">You are in local developer preview. Click 'Authorize' to simulate a clean card confirmation and compile your saved Avenzo queue.</p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <span className="text-[10px] uppercase text-gray-400 block font-bold mb-1">Invoice Value</span>
+                <span className="text-xl font-bold font-mono text-gray-900">
+                  PKR {Number(new URLSearchParams(window.location.search).get('amount') || 0).toLocaleString()}
+                </span>
+                <div className="text-[10px] text-gray-400 mt-1">Order Ref: <span className="font-mono text-gray-900 font-semibold">{new URLSearchParams(window.location.search).get('order_id')}</span></div>
+              </div>
+
+              <div className="bg-gray-50 border border-gray-200 p-4 rounded-xl space-y-3 font-sans">
+                <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold block">Simulated Card Details</span>
+                <div className="space-y-2.5 text-xs text-gray-600">
+                  <div>
+                    <label className="text-[9px] uppercase text-gray-400 font-bold block">Credit/Debit Card Number</label>
+                    <input type="text" disabled value="4242 •••• •••• •••• 4242" className="bg-white border border-gray-200 p-2.5 rounded-lg w-full mt-1 text-gray-800 font-mono shadow-xs" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[9px] uppercase text-gray-400 font-bold block">Expiry Month/Year</label>
+                      <input type="text" disabled value="12 / 2030" className="bg-white border border-gray-200 p-2.5 rounded-lg w-full mt-1 text-gray-800 font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-[9px] uppercase text-gray-400 font-bold block">CVV</label>
+                      <input type="text" disabled value="123" className="bg-white border border-gray-200 p-2.5 rounded-lg w-full mt-1 text-gray-800 font-mono" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-3 font-sans">
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams(window.location.search);
+                  const token = params.get('token');
+                  window.location.href = `/payment-verify?tracker=${token}&sig=mock_sig_code`;
+                }}
+                className="w-full bg-emerald-600 text-white font-bold uppercase tracking-widest text-[10px] py-3.5 hover:bg-emerald-700 transition-colors rounded-xl text-center cursor-pointer shadow-md"
+              >
+                Authorize Payment
+              </button>
+              <button
+                onClick={() => {
+                  window.location.href = `/payment-cancel?payment_cancel=true`;
+                }}
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold uppercase tracking-widest text-[10px] py-3.5 transition-colors rounded-xl text-center cursor-pointer"
+              >
+                Cancel Sandbox
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* SAFEPAY SECURE WEBHOOK / REDIRECT VERIFICATION GATEWAY */}
+        {activePage === 'safepay-verify' && (
+          <SafepayVerificationScreen
+            onSuccess={(finalizedOrder) => {
+              // Deduct stock levels locally to stay perfectly in sync
+              setProducts((prevProducts) => {
+                return prevProducts.map((p) => {
+                  const item = finalizedOrder.items.find((it: any) => it.product.id === p.id);
+                  if (item) {
+                    return {
+                      ...p,
+                      stock: Math.max(0, p.stock - item.quantity)
+                    };
+                  }
+                  return p;
+                });
+              });
+
+              // Add to global order queue
+              setOrders((prev) => {
+                if (!prev.find(o => o.id === finalizedOrder.id)) {
+                  return [...prev, finalizedOrder];
+                }
+                return prev;
+              });
+
+              // Purge acquisition cart
+              setCart([]);
+            }}
+          />
+        )}
+
+        {/* SAFEPAY SPECIFIC CANCELLED / RELEASED PROTOCOL */}
+        {activePage === 'safepay-cancel' && (
+          <SafepayCancelScreen />
         )}
 
         {/* ACCOUNT DASHBOARD AND USER AUTHENTICATION SCREEN */}
