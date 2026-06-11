@@ -794,6 +794,15 @@ app.post('/api/auth/login', (req, res) => {
   res.json(userWithoutPassword);
 });
 
+// GET REGISTERED USERS FOR ADMIN PANEL (EXCLUDING PASSWORDS)
+app.get('/api/users', (req, res) => {
+  const users = DATA_STORE.users.map(u => {
+    const { password: _, ...userWithoutPassword } = u;
+    return userWithoutPassword;
+  });
+  res.json(users);
+});
+
 // GET DASHBOARD STATISTICS FOR THE ADMIN PANEL
 app.get('/api/analytics', (req, res) => {
   const orders = DATA_STORE.orders;
