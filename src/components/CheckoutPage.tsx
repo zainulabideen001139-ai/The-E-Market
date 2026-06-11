@@ -34,17 +34,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [completedOrder, setCompletedOrder] = useState<any | null>(null);
   const [simulatedEmail, setSimulatedEmail] = useState<any | null>(null);
 
-  // Credit Card mock inputs
-  const [cardNo, setCardNo] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
-
   // Mobile wallets mock inputs
   const [walletPhone, setWalletPhone] = useState('');
 
   const pakistanCities = [
     'Lahore', 'Karachi', 'Islamabad', 'Faisalabad', 'Rawalpindi', 
-    'Peshawar', 'Multan', 'Quetta', 'Sialkot', 'Gujranwala', 'Peshawar'
+    'Peshawar', 'Multan', 'Quetta', 'Sialkot', 'Gujranwala'
   ];
 
   const handleApplyVoucher = () => {
@@ -106,56 +101,56 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   // SUCCESS VIRTUAL INVOICE RECEIPT
   if (completedOrder) {
     return (
-      <div className="max-w-3xl mx-auto bg-[#141414] border border-[#C5A059]/40 p-6 sm:p-10 rounded-sm text-neutral-300 animate-fade-in space-y-8 my-8">
+      <div className="max-w-3xl mx-auto bg-white border border-indigo-100 p-6 sm:p-10 rounded-2xl text-gray-700 animate-fade-in space-y-8 my-8 shadow-lg">
         
         {/* Animated Checkmark branding header */}
         <div className="text-center space-y-3">
-          <div className="h-14 w-14 bg-[#C5A059]/10 rounded-full flex items-center justify-center mx-auto text-[#C5A059] border border-[#C5A059]/30">
+          <div className="h-14 w-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600 border border-emerald-200">
             <CheckCircle2 size={32} />
           </div>
-          <h2 className="serif text-3xl italic text-white font-medium">Bespoke Acquisition Completed</h2>
-          <p className="text-xs text-neutral-400">
+          <h2 className="serif text-3xl italic text-gray-900 font-semibold">Bespoke Acquisition Completed</h2>
+          <p className="text-xs text-gray-500 font-medium">
             Dear Client, thank you for investing with Avenzo. Your order queue is now custom authorized.
           </p>
         </div>
 
         {/* Invoice Summary Card */}
-        <div className="bg-black border border-neutral-900 p-6 space-y-4">
-          <div className="flex justify-between items-center text-xs text-neutral-500 border-b border-neutral-900 pb-3">
-            <span>ORDER REFERENCE: <strong className="text-white font-mono">{completedOrder.id}</strong></span>
-            <span>SHIPPING HUB: <strong className="text-white uppercase">{completedOrder.city}</strong></span>
+        <div className="bg-gray-50 border border-gray-150 p-6 rounded-xl space-y-4 shadow-xs">
+          <div className="flex justify-between items-center text-xs text-gray-500 border-b border-gray-250 pb-3">
+            <span>ORDER REFERENCE: <strong className="text-gray-900 font-mono font-bold">{completedOrder.id}</strong></span>
+            <span>SHIPPING HUB: <strong className="text-gray-900 uppercase font-bold">{completedOrder.city}</strong></span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans">
             <div>
-              <span className="text-neutral-500 uppercase tracking-widest block font-medium">Delivery Destination</span>
-              <p className="text-neutral-300 font-semibold mt-1">{completedOrder.customerName}</p>
-              <p className="text-neutral-400">{completedOrder.shippingAddress}, {completedOrder.city}, Pakistan</p>
-              <p className="text-neutral-500 font-mono mt-0.5">{completedOrder.customerPhone}</p>
+              <span className="text-gray-400 uppercase tracking-widest block font-bold text-[9px]">Delivery Destination</span>
+              <p className="text-gray-800 font-bold mt-1 text-sm">{completedOrder.customerName}</p>
+              <p className="text-gray-600 font-medium">{completedOrder.shippingAddress}, {completedOrder.city}, Pakistan</p>
+              <p className="text-gray-500 font-mono mt-0.5">{completedOrder.customerPhone}</p>
             </div>
             <div>
-              <span className="text-neutral-500 uppercase tracking-widest block font-medium">Consignment Tracking</span>
-              <p className="text-[#C5A059] font-mono font-bold mt-1 text-sm">{completedOrder.trackingNumber}</p>
-              <p className="text-neutral-400 mt-1">Payment: <strong className="text-white">{completedOrder.paymentMethod}</strong></p>
-              <p className="text-[10px] text-green-400 mt-0.5">✓ Inventory reserved and dispatched to shipment preparation</p>
+              <span className="text-gray-400 uppercase tracking-widest block font-bold text-[9px]">Consignment Tracking</span>
+              <p className="text-indigo-600 font-mono font-bold mt-1 text-sm">{completedOrder.trackingNumber}</p>
+              <p className="text-gray-650 mt-1 font-medium text-gray-600">Payment: <strong className="text-gray-900">{completedOrder.paymentMethod}</strong></p>
+              <p className="text-[10px] text-emerald-600 font-bold mt-1">✓ Cargo reserved and dispatched to shipment preparation</p>
             </div>
           </div>
 
           {/* Table Items Purchased */}
-          <div className="border-t border-neutral-900 pt-4 space-y-2">
-            <span className="text-[10px] uppercase text-neutral-500 tracking-widest block font-medium pb-1">Secured Assets</span>
+          <div className="border-t border-gray-150 pt-4 space-y-2">
+            <span className="text-[10px] uppercase text-gray-400 tracking-widest block font-semibold pb-1">Secured Assets</span>
             {completedOrder.items.map((it: any) => (
               <div key={it.product.id} className="flex justify-between items-center text-xs">
-                <span className="text-white font-medium truncate max-w-[250px]">{it.product.name} (x{it.quantity})</span>
-                <span className="text-neutral-400 font-mono">Rs. {(it.product.price * it.quantity).toLocaleString()}</span>
+                <span className="text-gray-800 font-medium truncate max-w-[250px]">{it.product.name} (x{it.quantity})</span>
+                <span className="text-gray-600 font-mono font-medium">Rs. {(it.product.price * it.quantity).toLocaleString()}</span>
               </div>
             ))}
           </div>
 
           {/* Sum details */}
-          <div className="border-t border-neutral-900 pt-3 flex justify-between items-center text-sm">
-            <span className="text-white font-bold">Invoiced Sum</span>
-            <span className="text-[#C5A059] text-base font-bold font-mono">
+          <div className="border-t border-gray-150 pt-3 flex justify-between items-center text-sm font-sans">
+            <span className="text-gray-900 font-bold uppercase tracking-wider">Invoiced Sum</span>
+            <span className="text-indigo-600 text-base font-bold font-mono">
               Rs. {completedOrder.totalAmount.toLocaleString()}
             </span>
           </div>
@@ -163,27 +158,27 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
         {/* SIMULATED EMAIL NOTIFICATION DISPATCHED BLOCK */}
         {simulatedEmail && (
-          <div className="bg-[#0A0A0A] border border-neutral-800 p-5 rounded space-y-2.5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-neutral-400">
+          <div className="bg-blue-50/50 border border-blue-100 p-5 rounded-xl space-y-2.5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-blue-800">
               <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span> Custom Mail Notification Dispatch Terminal
             </div>
-            <div className="bg-neutral-950 p-4 rounded text-xs font-mono space-y-2 text-neutral-400 leading-relaxed border border-neutral-900">
-              <p><strong className="text-white">To:</strong> {simulatedEmail.to}</p>
-              <p><strong className="text-white">Subject:</strong> {simulatedEmail.subject}</p>
-              <hr className="border-neutral-900 my-2" />
-              <p className="whitespace-pre-line text-neutral-300">{simulatedEmail.body}</p>
+            <div className="bg-white p-4 rounded-xl text-xs font-mono space-y-2 text-gray-700 leading-relaxed border border-blue-50">
+              <p><strong className="text-blue-900">To:</strong> {simulatedEmail.to}</p>
+              <p><strong className="text-blue-900">Subject:</strong> {simulatedEmail.subject}</p>
+              <hr className="border-gray-100 my-2" />
+              <p className="whitespace-pre-line text-gray-800">{simulatedEmail.body}</p>
             </div>
-            <span className="text-[10px] text-neutral-500 italic block text-right mt-1">* Avenzo automatic email client dispatch simulated live.</span>
+            <span className="text-[10px] text-blue-600 italic block text-right mt-1 font-sans">* Avenzo automatic email client dispatch simulated live.</span>
           </div>
         )}
 
-        <div className="text-center pt-2">
-          <p className="text-xs text-neutral-500 mb-4">
-            You may trace your cargo status at any time inside the <strong className="text-[#C5A059]">Client Workspace</strong> using your tracking number.
+        <div className="text-center pt-2 font-sans">
+          <p className="text-xs text-gray-500 mb-4 font-medium">
+            You may trace your cargo status at any time inside the <strong className="text-indigo-600">Client Workspace</strong> using your tracking number.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-8 py-3 bg-[#C5A059] text-black hover:bg-[#DFBA73] font-bold text-xs uppercase tracking-widest transition-colors cursor-pointer"
+            className="px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold text-xs uppercase tracking-widest transition-all rounded-xl cursor-pointer shadow-sm"
           >
             Acknowledge Receipt & Return
           </button>
@@ -196,9 +191,9 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   // CART IS EMPTY SCREEN
   if (cart.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
-        <h2 className="serif text-2xl italic text-white">Your Checkout Portal is Empty</h2>
-        <p className="text-neutral-400 text-xs">
+      <div className="max-w-2xl mx-auto py-16 text-center space-y-4 animate-fade-in font-sans">
+        <h2 className="serif text-2xl italic text-gray-900 font-semibold">Your Checkout Portal is Empty</h2>
+        <p className="text-gray-500 text-xs font-medium">
           Select elegant products from our boutique pages before requesting custom acquisitions.
         </p>
       </div>
@@ -207,61 +202,61 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-fade-in">
-      <h2 className="serif text-3xl italic text-white mb-8">Bespoke Acquisition Portal</h2>
+      <h2 className="serif text-3xl italic text-gray-900 mb-8 font-semibold select-none animate-fade-in">Bespoke Acquisition Portal</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start font-sans">
         
         {/* Left Form credentials */}
-        <div className="lg:col-span-7 bg-[#141414] border border-neutral-900 p-6 sm:p-8 rounded-sm space-y-6">
-          <div className="border-b border-neutral-900 pb-3">
-            <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">1. Client Shipping Credentials</h3>
-            <p className="text-[11px] text-neutral-400 mt-0.5">Please provide complete destination vectors across Pakistan.</p>
+        <div className="lg:col-span-7 bg-white border border-gray-200 p-6 sm:p-8 rounded-2xl shadow-md space-y-6">
+          <div className="border-b border-gray-150 pb-3">
+            <h3 className="text-xs uppercase tracking-widest text-indigo-600 font-bold">1. Client Shipping Credentials</h3>
+            <p className="text-[11px] text-gray-500 mt-0.5 font-medium font-sans">Please provide complete destination vectors across Pakistan.</p>
           </div>
 
           <form onSubmit={handleCheckoutSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans font-medium">
               <div>
-                <label className="text-[10px] uppercase text-neutral-500 block mb-1">Full Name</label>
+                <label className="text-[10px] uppercase text-gray-400 block mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059]"
+                  className="bg-white border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none focus:border-indigo-600 shadow-xs"
                   placeholder="e.g., Zain-ul-Abideen"
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase text-neutral-500 block mb-1">Priority Email Address</label>
+                <label className="text-[10px] uppercase text-gray-400 block mb-1">Priority Email Address</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059]"
+                  className="bg-white border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none focus:border-indigo-600 shadow-xs"
                   placeholder="e.g., client@avenzo.pk"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-sans font-medium">
               <div>
-                <label className="text-[10px] uppercase text-neutral-500 block mb-1">Cellular Hotline (WhatsApp Preferred)</label>
+                <label className="text-[10px] uppercase text-gray-400 block mb-1">Cellular Hotline (WhatsApp Preferred)</label>
                 <input
                   type="tel"
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059]"
+                  className="bg-white border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none focus:border-indigo-600 shadow-xs"
                   placeholder="e.g., +92-300-1234567"
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase text-[#C5A059] block mb-1">Destination Metropolitan Hub</label>
+                <label className="text-[10px] uppercase text-indigo-600 block mb-1">Destination Metropolitan Hub</label>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059]"
+                  className="bg-[#F8FAFC] border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none"
                 >
                   {pakistanCities.map((c) => (
                     <option key={c} value={c}>{c} Hub</option>
@@ -270,116 +265,116 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               </div>
             </div>
 
-            <div>
-              <label className="text-[10px] uppercase text-neutral-500 block mb-1">Physical Residential/Executive Address</label>
+            <div className="text-xs font-sans font-medium">
+              <label className="text-[10px] uppercase text-gray-400 block mb-1">Physical Residential/Executive Address</label>
               <input
                 type="text"
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059]"
+                className="bg-white border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none focus:border-indigo-600 shadow-xs"
                 placeholder="House No, Block ID, Phase / Sector, Street Name..."
               />
             </div>
 
-            <div>
-              <label className="text-[10px] uppercase text-neutral-500 block mb-1">Custom Delivery Annotations (Optional)</label>
+            <div className="text-xs font-sans font-medium">
+              <label className="text-[10px] uppercase text-gray-400 block mb-1">Custom Delivery Annotations (Optional)</label>
               <textarea
                 rows={1.5}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="bg-[#0A0A0A] border border-neutral-800 text-xs text-white p-3 w-full focus:outline-none focus:border-[#C5A059] resize-none"
-                placeholder="e.g., Please coordinate call 1 hour before Lahorite courier courier arrives..."
+                className="bg-white border border-gray-200 text-xs text-gray-800 p-3 rounded-xl w-full focus:outline-none focus:border-indigo-600 shadow-xs resize-none"
+                placeholder="e.g., Please coordinate call 1 hour before Lahorite courier arrives..."
               ></textarea>
             </div>
 
             {/* PAYMENT METHODS SELECTOR CARD */}
-            <div className="border-t border-neutral-900 pt-6 space-y-4">
+            <div className="border-t border-gray-150 pt-6 space-y-4 font-sans">
               <div>
-                <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">2. Select Imperial Payment Method</h3>
-                <p className="text-[11px] text-neutral-400 mt-0.5">Please select Cash on Delivery or offline Bank Wire Transfer to checkout instantly.</p>
+                <h3 className="text-xs uppercase tracking-widest text-indigo-600 font-bold">2. Select Imperial Payment Method</h3>
+                <p className="text-[11px] text-gray-500 mt-0.5 font-medium">Please select Cash on Delivery or offline Bank Wire Transfer to checkout instantly.</p>
               </div>
 
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('Cash on Delivery')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
+                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-xl transition-all cursor-pointer ${
                     paymentMethod === 'Cash on Delivery' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
+                      ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 font-bold' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                   }`}
                 >
                   <MessageSquare size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">Cash On Delivery</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold">Cash On Delivery</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('Bank Transfer')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
+                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-xl transition-all cursor-pointer ${
                     paymentMethod === 'Bank Transfer' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
+                      ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 font-bold' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                   }`}
                 >
                   <Landmark size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">Bank Wire Transfer</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold">Bank Wire Transfer</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('JazzCash')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
+                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-xl transition-all cursor-pointer ${
                     paymentMethod === 'JazzCash' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
+                      ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 font-bold' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                   }`}
                 >
                   <Smartphone size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">JazzCash Wallet</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold">JazzCash Wallet</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('Easypaisa')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
+                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-xl transition-all cursor-pointer ${
                     paymentMethod === 'Easypaisa' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
+                      ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 font-bold' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                   }`}
                 >
                   <Smartphone size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">Easypaisa Wallet</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold">Easypaisa Wallet</span>
                 </button>
 
                 <div
-                  className="border border-neutral-900 bg-[#1e140d]/25 p-3.5 flex flex-col justify-between h-20 text-left rounded-sm relative opacity-60 cursor-not-allowed select-none"
+                  className="border border-gray-150 bg-gray-50/50 p-3.5 flex flex-col justify-between h-20 text-left rounded-xl relative opacity-50 cursor-not-allowed select-none"
                   title="Online Processing under standard maintenance"
                 >
-                  <CreditCard size={16} className="text-orange-400/80" />
+                  <CreditCard size={16} className="text-gray-400" />
                   <div>
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block leading-tight">Card Channels</span>
-                    <span className="text-[8px] text-[#C5A059] font-bold">COMING SOON</span>
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 block leading-tight">Card Channels</span>
+                    <span className="text-[8px] text-gray-400 font-mono">DEVELOPING</span>
                   </div>
                 </div>
               </div>
 
               {/* DYNAMIC PAYMENT PARAMETERS */}
               {paymentMethod === 'Cash on Delivery' && (
-                <div className="bg-neutral-950 p-4 border border-neutral-800 rounded space-y-2 text-xs text-neutral-400">
-                  <span className="text-white font-bold uppercase tracking-wide block">Cash on Delivery Verification</span>
-                  <p>Pay with cash directly to our logistics rep upon receiving your premium luxury consignment. Shipping and packing will be dispatched inside 24 hours.</p>
+                <div className="bg-emerald-50/30 p-4 border border-emerald-100 rounded-xl space-y-2 text-xs text-gray-600">
+                  <span className="text-emerald-800 font-bold uppercase tracking-wide block font-sans">Cash on Delivery Verification</span>
+                  <p className="font-medium font-sans">Pay with cash directly to our logistics rep upon receiving your premium luxury consignment. Shipping and packing will be dispatched inside 24 hours.</p>
                 </div>
               )}
 
               {paymentMethod === 'Bank Transfer' && (
-                <div className="bg-neutral-950 p-4 border border-neutral-800 rounded text-xs space-y-2 text-neutral-400">
-                  <span className="text-white font-bold uppercase tracking-wide block">Avenzo Corporate Escrow Account</span>
-                  <p>Transfer the final total sum directly to Bank Alfalah, and our luxury audit desk will instantly authorize consignment dispatch once validated.</p>
-                  <div className="bg-black/90 p-3 rounded font-mono space-y-1 my-1 text-white text-[11px] border border-neutral-900">
+                <div className="bg-indigo-50/30 p-4 border border-indigo-100 rounded-xl text-xs space-y-2 text-gray-600">
+                  <span className="text-indigo-800 font-bold uppercase tracking-wide block font-sans">Avenzo Corporate Escrow Account</span>
+                  <p className="font-medium text-gray-600">Transfer the final total sum directly to Bank Alfalah, and our luxury dispatch desk will instantly authorize consignment dispatch once validated.</p>
+                  <div className="bg-white p-3 rounded-lg font-mono space-y-1 my-1 text-gray-800 text-[11px] border border-gray-200 shadow-xs">
                     <div>Bank Name: Bank Alfalah Premier Block Gulberg</div>
-                    <div>Account Title: AVENZO CO. OFFICIAL</div>
+                    <div>Account Title: <strong className="text-gray-900">AVENZO CO. OFFICIAL</strong></div>
                     <div>IBAN: PK42 ALFH 1002 9840 2910 03</div>
                     <div>SWIFT: ALFH-PK-LHR-XXX</div>
                   </div>
@@ -387,31 +382,31 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               )}
 
               {(paymentMethod === 'JazzCash' || paymentMethod === 'Easypaisa') && (
-                <div className="bg-neutral-950 p-4 border border-neutral-800 rounded space-y-3">
-                  <div className="flex justify-between items-center text-[10px] text-neutral-500 uppercase font-mono">
+                <div className="bg-indigo-50/30 p-4 border border-indigo-100 rounded-xl space-y-3">
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 uppercase font-mono">
                     <span>📱 Wallet Direct Authorization</span>
                   </div>
                   <div>
-                    <label className="text-[9px] uppercase text-neutral-500">Linked Account Mobile Number (Pakistan)</label>
+                    <label className="text-[9px] uppercase text-gray-400 block font-bold">Linked Account Mobile Number (Pakistan)</label>
                     <input
                       type="tel"
                       value={walletPhone}
                       onChange={(e) => setWalletPhone(e.target.value)}
-                      className="bg-[#0A0A0A] border border-neutral-800 p-3 text-xs text-white w-full mt-1 focus:outline-none focus:border-[#C5A059]"
+                      className="bg-white border border-gray-200 p-3 rounded-xl text-xs text-gray-800 w-full mt-1 focus:outline-none focus:border-indigo-600"
                       placeholder="03001234567"
                     />
                   </div>
-                  <p className="text-[9px] text-neutral-500 italic">* You will receive an automated PIN pop-up on your device immediately after submitting.</p>
+                  <p className="text-[9px] text-gray-450 italic font-medium font-sans">* You will receive an automated PIN pop-up on your device immediately after submitting.</p>
                 </div>
               )}
             </div>
 
             {/* AUTHORIZE ACQUISITION PUSH BUTTON */}
-            <div className="pt-4 border-t border-neutral-900">
+            <div className="pt-4 border-t border-gray-150">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#C5A059] text-black font-bold uppercase tracking-widest text-xs py-4 hover:bg-[#DFBA73] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full bg-indigo-600 text-white font-bold uppercase tracking-widest text-xs py-4 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 rounded-xl font-sans"
               >
                 <Lock size={12} /> {isSubmitting ? 'Verifying Safe Channels...' : `Authorize Imperial Transaction (Rs. ${totalInvoicedAmount.toLocaleString()})`}
               </button>
@@ -421,25 +416,25 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         </div>
 
         {/* Right Product Checkout cart overview list */}
-        <div className="lg:col-span-5 bg-black border border-neutral-900 p-6 space-y-6">
-          <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Invoiced Summary</h3>
+        <div className="lg:col-span-5 bg-white border border-gray-200 p-6 space-y-6 rounded-2xl shadow-md font-sans">
+          <h3 className="text-xs uppercase tracking-widest text-indigo-600 font-bold">Invoiced Summary</h3>
 
           {/* Cart items list */}
-          <div className="space-y-4 divide-y divide-neutral-900 max-h-60 overflow-y-auto pr-2">
+          <div className="space-y-4 divide-y divide-gray-150 max-h-60 overflow-y-auto pr-2">
             {cart.map((item) => (
               <div key={item.product.id} className="flex gap-4 pt-4 first:pt-0">
                 <img
                   src={item.product.imageUrl}
                   alt={item.product.name}
-                  className="h-12 w-12 object-cover rounded border border-neutral-800"
+                  className="h-12 w-12 object-cover rounded-xl border border-gray-200"
                 />
                 <div className="flex-1 space-y-1 min-w-0">
-                  <h4 className="text-white text-xs font-semibold truncate hover:text-[#C5A059] transition-colors">
+                  <h4 className="text-gray-900 text-xs font-bold truncate hover:text-indigo-605 transition-colors">
                     {item.product.name}
                   </h4>
-                  <div className="flex justify-between items-center text-[10px] text-neutral-400 font-mono">
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono">
                     <span>Qty: {item.quantity}</span>
-                    <span className="text-[#C5A059] font-semibold">
+                    <span className="text-indigo-600 font-bold">
                       Rs. {(item.product.price * item.quantity).toLocaleString()}
                     </span>
                   </div>
@@ -449,54 +444,54 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           </div>
 
           {/* Voucher input block */}
-          <div className="bg-neutral-950 border border-neutral-900 p-4 rounded space-y-2">
-            <label className="text-[10px] uppercase text-neutral-500 tracking-wider font-semibold flex items-center gap-1">
-              <Tag size={11} className="text-[#C5A059]" /> Apply Custom Client Voucher
+          <div className="bg-gray-50 border border-gray-150 p-4 rounded-xl space-y-2">
+            <label className="text-[10px] uppercase text-gray-600 tracking-wider font-bold flex items-center gap-1">
+              <Tag size={11} className="text-indigo-600" /> Apply Custom Client Voucher
             </label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={voucher}
                 onChange={(e) => setVoucher(e.target.value)}
-                className="bg-[#0A0A0A] border border-neutral-800 text-xs px-3 py-2 text-white flex-1 focus:outline-none focus:border-[#C5A059]"
+                className="bg-white border border-gray-205 border-gray-200 rounded-xl text-xs px-3 py-2 text-gray-800 flex-1 focus:outline-none focus:border-indigo-600 font-mono font-medium"
                 placeholder="e.g., AVENZOVIP"
               />
               <button
                 onClick={handleApplyVoucher}
-                className="bg-neutral-900 hover:bg-[#C5A059] border border-neutral-800 text-[10px] uppercase text-neutral-300 hover:text-black tracking-widest px-4 font-bold transition-all shrink-0 font-sans cursor-pointer"
+                className="bg-indigo-600 hover:bg-indigo-700 text-[10px] uppercase text-white tracking-widest px-4 font-bold transition-all shrink-0 font-sans cursor-pointer rounded-xl"
               >
                 Apply
               </button>
             </div>
             {appliedVoucher && (
-              <span className="text-[10px] text-green-400 font-bold block pt-1">{appliedVoucher}</span>
+              <span className="text-[10px] text-emerald-600 font-bold block pt-1">{appliedVoucher}</span>
             )}
-            <p className="text-[9px] text-neutral-500 italic mt-1 font-sans">
+            <p className="text-[9px] text-gray-450 italic mt-1 font-sans">
               * Try code "AVENZOVIP" for 10% VIP or "GULBERGLUXURE" for 15% launch discounts.
             </p>
           </div>
 
           {/* Aggregated Totals summary */}
-          <div className="space-y-2 text-xs pt-4 border-t border-neutral-900">
-            <div className="flex justify-between">
-              <span className="text-neutral-400">Products Subtotal:</span>
-              <span className="font-mono text-neutral-200">Rs. {cartSubtotal.toLocaleString()}</span>
+          <div className="space-y-2 text-xs pt-4 border-t border-gray-150">
+            <div className="flex justify-between font-medium">
+              <span className="text-gray-500">Products Subtotal:</span>
+              <span className="font-mono text-gray-800">Rs. {cartSubtotal.toLocaleString()}</span>
             </div>
             {discountPercent > 0 && (
-              <div className="flex justify-between text-green-400 font-semibold">
+              <div className="flex justify-between text-emerald-600 font-bold">
                 <span>Client Discount ({discountPercent}%):</span>
                 <span className="font-mono">-Rs. {calculatedDiscount.toLocaleString()}</span>
               </div>
             )}
-            <div className="flex justify-between">
-              <span className="text-neutral-400">Insured Delivery Courier:</span>
-              <span className="font-mono text-neutral-200">
-                {deliverySurcharge === 0 ? <strong className="text-[#C5A059] uppercase text-[10px]">FREE</strong> : `Rs. ${deliverySurcharge.toLocaleString()}`}
+            <div className="flex justify-between font-medium">
+              <span className="text-gray-500">Insured Delivery Courier:</span>
+              <span className="font-mono text-gray-800">
+                {deliverySurcharge === 0 ? <strong className="text-emerald-600 uppercase text-[10px] font-bold">FREE</strong> : `Rs. ${deliverySurcharge.toLocaleString()}`}
               </span>
             </div>
-            <div className="flex justify-between pt-3 border-t border-neutral-900 text-sm">
-              <span className="text-white font-bold uppercase tracking-wider">Final Total Sum:</span>
-              <span className="text-[#C5A059] font-bold font-mono text-base">
+            <div className="flex justify-between pt-3 border-t border-gray-150 text-sm">
+              <span className="text-gray-900 font-bold uppercase tracking-wider">Final Total Sum:</span>
+              <span className="text-indigo-600 font-bold font-mono text-base">
                 Rs. {totalInvoicedAmount.toLocaleString()}
               </span>
             </div>

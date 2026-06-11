@@ -488,18 +488,18 @@ export default function App() {
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0A0A0A] text-[#E5E5E5] font-sans-inter">
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800 font-sans-inter">
       
       {/* 0. Top Editorial Announcement Ribbon */}
-      <div className="bg-gradient-to-r from-neutral-950 via-black to-neutral-950 border-b border-[#C5A059]/20 text-[10px] text-[#C5A059] uppercase tracking-[0.2em] py-2 px-4 flex flex-col sm:flex-row justify-between items-center gap-1.5 font-mono">
+      <div className="bg-gradient-to-r from-gray-900 via-[#1E293B] to-gray-900 border-b border-indigo-500/10 text-[10px] text-indigo-300 uppercase tracking-[0.2em] py-2 px-4 flex flex-col sm:flex-row justify-between items-center gap-1.5 font-mono">
         <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse shrink-0"></span>
           <span>VIP 5% Package Discount Active on Curated Workspace Suites</span>
         </div>
-        <div className="hidden md:inline text-neutral-400">
+        <div className="hidden md:inline text-gray-300">
           Complimentary White-Glove Courier dispatch across Pakistan Metropolitan centers
         </div>
-        <div className="text-neutral-500 font-sans tracking-wide">
+        <div className="text-gray-400 font-sans tracking-wide">
           Bespoke Support &middot; support@avenzo.pk
         </div>
       </div>
@@ -525,14 +525,14 @@ export default function App() {
 
             {/* Featured Luxury Categories Grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-              <div className="flex justify-between items-end border-b border-neutral-900 pb-3">
+              <div className="flex justify-between items-end border-b border-gray-200 pb-3">
                 <div>
-                  <span className="text-[10px] uppercase text-[#C5A059] tracking-widest font-mono">Curated Departments</span>
-                  <h2 className="serif text-2xl sm:text-3xl font-medium italic text-white mt-1">Acquisition Shelves</h2>
+                  <span className="text-[10px] uppercase text-indigo-600 tracking-widest font-mono font-bold">Curated Departments</span>
+                  <h2 className="serif text-2xl sm:text-3xl font-semibold italic text-gray-900 mt-1">Acquisition Shelves</h2>
                 </div>
                 <button 
                   onClick={() => setActivePage('categories')} 
-                  className="text-xs text-[#C5A059] uppercase tracking-widest font-semibold hover:underline"
+                  className="text-xs text-indigo-600 uppercase tracking-widest font-bold hover:underline font-mono"
                 >
                   Browse all departments
                 </button>
@@ -543,22 +543,22 @@ export default function App() {
                   <div
                     key={cat.id}
                     onClick={() => { setSelectedCategory(cat.id); setActivePage('shop'); }}
-                    className="group bg-[#141414] border border-neutral-900 overflow-hidden relative aspect-video flex items-end p-6 cursor-pointer hover:border-[#C5A059]/40 transition-all duration-300"
+                    className="group bg-white border border-gray-200 shadow-md rounded-2xl overflow-hidden relative aspect-video flex items-end p-6 cursor-pointer hover:border-indigo-300 transition-all duration-300 transform-gpu hover:-translate-y-0.5"
                   >
-                    <div className="absolute inset-0 bg-black/60 z-10"></div>
+                    <div className="absolute inset-0 bg-gray-900/40 z-10 group-hover:bg-gray-900/20 transition-all"></div>
                     {cat && 'imageUrl' in cat && (
                       <img
                         src={(cat as any).imageUrl}
                         alt={cat?.name || 'Category'}
-                        className="absolute inset-0 w-full h-full object-cover grayscale group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                         loading="lazy"
                       />
                     )}
                     <div className="relative z-20 space-y-1">
-                      <h3 className="serif text-white group-hover:text-[#C5A059] transition-colors text-lg italic leading-tight capitalize">
+                      <h3 className="serif text-white group-hover:text-indigo-200 transition-colors text-lg italic leading-tight capitalize font-semibold">
                         {cat?.name ? cat.name.replace('&', '\n&') : 'Curated Shelf'}
                       </h3>
-                      <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-medium block">
+                      <span className="text-[9px] uppercase tracking-widest text-indigo-200 font-bold block font-mono">
                         Browse Assets &rarr;
                       </span>
                     </div>
@@ -576,14 +576,14 @@ export default function App() {
 
             {/* Home featured products list */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-              <div className="flex justify-between items-end border-b border-neutral-900 pb-3">
+              <div className="flex justify-between items-end border-b border-gray-200 pb-3">
                 <div>
-                  <span className="text-[10px] uppercase text-[#C5A059] tracking-widest font-mono">The Elite selections</span>
-                  <h2 className="serif text-2xl sm:text-3xl font-medium italic text-white mt-1">Selected Masterpieces</h2>
+                  <span className="text-[10px] uppercase text-indigo-600 tracking-widest font-mono font-bold">The Elite selections</span>
+                  <h2 className="serif text-2xl sm:text-3xl font-semibold italic text-gray-900 mt-1">Selected Masterpieces</h2>
                 </div>
                 <button 
                   onClick={() => { setSelectedCategory('all'); setActivePage('shop'); }} 
-                  className="text-xs text-[#C5A059] uppercase tracking-widest font-semibold hover:underline"
+                  className="text-xs text-indigo-600 uppercase tracking-widest font-bold hover:underline"
                 >
                   View All 20 Masterpieces
                 </button>
@@ -603,36 +603,36 @@ export default function App() {
             </section>
 
             {/* Exclusive VIP Lounge story blocks */}
-            <section className="bg-black py-16 border-y border-neutral-950">
+            <section className="bg-white py-16 border-y border-gray-200">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
-                  <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Artisanal Design Philosophy</span>
-                  <h3 className="serif text-3xl sm:text-4xl italic text-white leading-tight">Every element carries historical precision.</h3>
-                  <p className="text-sm text-neutral-400 leading-relaxed font-sans">
+                  <span className="text-[10px] uppercase tracking-widest text-indigo-600 font-bold block">Artisanal Design Philosophy</span>
+                  <h3 className="serif text-3xl sm:text-4xl italic text-gray-900 leading-tight font-semibold">Every element carries historical precision.</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed font-sans font-medium">
                     Avenzo has established its identity by omitting the generic clutter of consumer packaging. We select masterpiece engineering components, design custom casing architectures, and deliver bespoke setups under white-glove courier dispatch. Elevating the homes of Gulberg, DHA, and Clifton to unprecedented standards.
                   </p>
-                  <ul className="space-y-3.5 text-xs text-neutral-300">
+                  <ul className="space-y-3.5 text-xs text-gray-600 font-medium font-sans">
                     <li className="flex items-center gap-2.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#C5A059]"></span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
                       Hand-inspected titanium finishes
                     </li>
                     <li className="flex items-center gap-2.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#C5A059]"></span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
                       T3 high-ambient cooling guarantees for Indus summers
                     </li>
                     <li className="flex items-center gap-2.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#C5A059]"></span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
                       Official NTN registered security warranties
                     </li>
                   </ul>
                 </div>
-                <div className="aspect-video bg-neutral-900 overflow-hidden rounded relative border border-neutral-900">
+                <div className="aspect-video bg-gray-50 overflow-hidden rounded-2xl relative border border-gray-200 shadow-md">
                   <img 
                     src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=700&auto=format&fit=crop" 
                     alt="Engineering excellence" 
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale transition-all duration-500"
                   />
-                  <div className="absolute bottom-4 left-4 bg-black/80 px-4 py-2 border border-neutral-800 text-[10px] font-mono text-white">
+                  <div className="absolute bottom-4 left-4 bg-white/95 px-4 py-2 border border-gray-200 text-[10px] font-mono text-gray-750 text-gray-700 shadow-xs rounded-lg">
                     AVENZO LABS &bull; DESIGN STANDARD OVERVIEW
                   </div>
                 </div>
@@ -645,44 +645,44 @@ export default function App() {
             {/* Elegant customer certified appraisals grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
               <div className="text-center space-y-2">
-                <span className="text-[10px] uppercase text-[#C5A059] tracking-widest font-mono font-bold block">Consigned Appraisals</span>
-                <h3 className="serif text-2xl sm:text-3xl italic text-white font-medium">Bespoke Client Appraisals</h3>
-                <p className="text-xs text-neutral-400 max-w-sm mx-auto leading-relaxed">
+                <span className="text-[10px] uppercase text-indigo-600 tracking-widest font-mono font-bold block">Consigned Appraisals</span>
+                <h3 className="serif text-2xl sm:text-3xl italic text-gray-900 font-semibold">Bespoke Client Appraisals</h3>
+                <p className="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed font-sans font-medium">
                   Genuine purchase experiences logged by distinguished patrons across Gulberg, DHA, and Clifton.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[#0D0D0D] border border-neutral-900 p-6 rounded relative space-y-4">
-                  <div className="flex text-[#C5A059] gap-1 text-xs">★★★★★</div>
-                  <p className="text-xs text-neutral-300 italic leading-relaxed">
+                <div className="bg-white border border-gray-200 p-6 rounded-2xl relative space-y-4 shadow-md">
+                  <div className="flex text-amber-500 gap-1 text-xs">★★★★★</div>
+                  <p className="text-xs text-gray-600 italic leading-relaxed font-sans font-medium">
                     "I ordered the executive study furniture set with custom wood matching. Delivery arrived inside custom secure crates to DHA Phase 6 within 24 hours. Exceptionally luxurious, absolutely recommend."
                   </p>
-                  <div className="border-t border-neutral-900/60 pt-3">
-                    <span className="text-white text-xs font-semibold block">Barrister Humayun K.</span>
-                    <span className="text-[9px] text-neutral-500 block uppercase font-mono">DHA Phase 6, Lahore &bull; Verified Owner</span>
+                  <div className="border-t border-gray-100 pt-3">
+                    <span className="text-gray-900 text-xs font-bold block">Barrister Humayun K.</span>
+                    <span className="text-[9px] text-gray-400 block uppercase font-mono">DHA Phase 6, Lahore &bull; Verified Owner</span>
                   </div>
                 </div>
 
-                <div className="bg-[#0D0D0D] border border-neutral-900 p-6 rounded relative space-y-4 font-sans">
-                  <div className="flex text-[#C5A059] gap-1 text-xs">★★★★★</div>
-                  <p className="text-xs text-neutral-300 italic leading-relaxed">
+                <div className="bg-white border border-gray-200 p-6 rounded-2xl relative space-y-4 shadow-md font-sans">
+                  <div className="flex text-amber-500 gap-1 text-xs">★★★★★</div>
+                  <p className="text-xs text-gray-600 italic leading-relaxed font-sans font-medium">
                     "The Zenith Business Laptop performs flawlessly under extreme rendering tasks. Highly impressed with Avenzo's local tax documentation compliance and custom private courier service status."
                   </p>
-                  <div className="border-t border-neutral-900/60 pt-3">
-                    <span className="text-white text-xs font-semibold block">Syeda Maryam T.</span>
-                    <span className="text-[9px] text-neutral-500 block uppercase font-mono">E-Block Gulberg, Lahore &bull; Tech Lead</span>
+                  <div className="border-t border-gray-100 pt-3">
+                    <span className="text-gray-900 text-xs font-bold block">Syeda Maryam T.</span>
+                    <span className="text-[9px] text-gray-400 block uppercase font-mono">E-Block Gulberg, Lahore &bull; Tech Lead</span>
                   </div>
                 </div>
 
-                <div className="bg-[#0D0D0D] border border-neutral-900 p-6 rounded relative space-y-4 font-sans">
-                  <div className="flex text-[#C5A059] gap-1 text-xs">★★★★★</div>
-                  <p className="text-xs text-neutral-300 italic leading-relaxed">
+                <div className="bg-white border border-gray-200 p-6 rounded-2xl relative space-y-4 shadow-md font-sans">
+                  <div className="flex text-amber-500 gap-1 text-xs">★★★★★</div>
+                  <p className="text-xs text-gray-600 italic leading-relaxed font-sans font-medium">
                     "Avenzo climate systems are unmatched. Custom double-stage inverters configured for Lahore's 48C high-humidity summer peaks, managing ultra-low energy grids perfectly. Flawless white-glove setup."
                   </p>
-                  <div className="border-t border-neutral-900/60 pt-3">
-                    <span className="text-white text-xs font-semibold block">Dr. Faisal J.</span>
-                    <span className="text-[9px] text-neutral-500 block uppercase font-mono">Clifton Block 5, Karachi &bull; Specialist</span>
+                  <div className="border-t border-gray-100 pt-3">
+                    <span className="text-gray-900 text-xs font-bold block">Dr. Faisal J.</span>
+                    <span className="text-[9px] text-gray-400 block uppercase font-mono">Clifton Block 5, Karachi &bull; Specialist</span>
                   </div>
                 </div>
               </div>
@@ -690,8 +690,8 @@ export default function App() {
 
             {/* Interactive newsletter sign up VIP updates */}
             <section className="max-w-md mx-auto px-4 text-center space-y-4 py-8">
-              <h3 className="serif text-2xl italic text-white">Join Avenzo VIP Register</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed font-sans">
+              <h3 className="serif text-2xl italic text-gray-900 font-semibold">Join Avenzo VIP Register</h3>
+              <p className="text-xs text-gray-500 leading-relaxed font-sans font-medium">
                 Subscribers receive exclusive access keys, pre-order queues for limited electronics releases, and invitations to Lahorite private previews.
               </p>
               <form onSubmit={(e) => { e.preventDefault(); alert('✓ Thank you. Your email address has been custom queued inside our VIP channel.'); }} className="flex gap-2">
@@ -699,11 +699,11 @@ export default function App() {
                   type="email"
                   required
                   placeholder="name@avenzo.pk"
-                  className="bg-neutral-950 border border-neutral-800 text-xs px-4 py-3 text-white flex-1 focus:outline-none focus:border-[#C5A059]"
+                  className="bg-white border border-gray-200 text-xs px-4 py-3 text-gray-850 text-gray-800 flex-1 focus:outline-none focus:border-indigo-600 rounded-xl"
                 />
                 <button
                   type="submit"
-                  className="bg-[#C5A059] text-black font-bold uppercase text-[10px] tracking-widest px-6 hover:bg-[#DFBA73] transition-colors"
+                  className="bg-indigo-600 text-white font-bold uppercase text-[10px] tracking-widest px-6 hover:bg-indigo-700 transition-colors rounded-xl font-sans"
                 >
                   Register
                 </button>
@@ -717,32 +717,32 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
             
             {/* Title description */}
-            <div className="border-b border-neutral-900 pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="border-b border-gray-250 border-gray-200 pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
-                <span className="text-[10px] uppercase text-[#C5A059] tracking-widest font-mono">The Acquisition Lounge</span>
-                <h2 className="serif text-4xl italic text-white mt-1.5">Avenzo Collections</h2>
-                <p className="text-xs text-neutral-400 mt-1 max-w-xl font-sans">
+                <span className="text-[10px] uppercase text-indigo-600 tracking-widest font-mono font-bold">The Acquisition Lounge</span>
+                <h2 className="serif text-4xl italic text-gray-900 mt-1.5 font-semibold">Avenzo Collections</h2>
+                <p className="text-xs text-gray-500 mt-1 max-w-xl font-sans font-medium">
                   Filter and sort masterfully crafted laptops, audio frameworks, climatic inverters, and physical executive desks.
                 </p>
               </div>
 
               {/* Status text count */}
-              <div className="text-xs text-neutral-500 font-mono tracking-wider">
-                Displaying <span className="text-[#C5A059] font-bold font-mono">{filteredProducts.length}</span> of 20 elite assets
+              <div className="text-xs text-gray-400 font-mono tracking-wider">
+                Displaying <span className="text-indigo-600 font-bold font-mono">{filteredProducts.length}</span> of 20 elite assets
               </div>
             </div>
 
             {/* Filter controls layer */}
-            <div className="bg-[#141414] border border-neutral-900 p-5 rounded flex flex-wrap gap-6 items-center justify-between">
+            <div className="bg-white border border-gray-200 p-5 rounded-2xl flex flex-wrap gap-6 items-center justify-between shadow-sm">
               
               {/* Category buttons list */}
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedCategory('all')}
-                  className={`px-4 py-1.5 text-xs font-semibold rounded-full border transition-all ${
+                  className={`px-4 py-1.5 text-xs font-semibold rounded-full border transition-all cursor-pointer ${
                     selectedCategory === 'all' 
-                      ? 'bg-[#C5A059] text-black border-[#C5A059]' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' 
+                      : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                   }`}
                 >
                   All collections
@@ -751,10 +751,10 @@ export default function App() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-1.5 text-xs font-semibold rounded-full border transition-all capitalize ${
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-full border transition-all capitalize cursor-pointer ${
                       selectedCategory === cat.id
-                        ? 'bg-[#C5A059] text-black border-[#C5A059]'
-                        : 'border-neutral-800 text-neutral-400 hover:text-white'
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                        : 'border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-55'
                     }`}
                   >
                     {cat && cat.name ? cat.name.split(' ')[0] : 'Collection'}
@@ -763,9 +763,9 @@ export default function App() {
               </div>
 
               {/* Price filter and sorting dropdown */}
-              <div className="flex flex-wrap items-center gap-6 text-xs text-neutral-400">
+              <div className="flex flex-wrap items-center gap-6 text-xs text-gray-500 font-medium">
                 <div className="space-y-1">
-                  <span className="text-[10px] uppercase tracking-wider text-neutral-500 block">Cap Price: <strong className="text-[#C5A059] font-mono">Rs. {priceRange.toLocaleString()}</strong></span>
+                  <span className="text-[10px] uppercase tracking-wider text-gray-400 block">Cap Price: <strong className="text-indigo-600 font-mono font-bold">Rs. {priceRange.toLocaleString()}</strong></span>
                   <input
                     type="range"
                     min="50000"
@@ -773,16 +773,16 @@ export default function App() {
                     step="5000"
                     value={priceRange}
                     onChange={(e) => setPriceRange(Number(e.target.value))}
-                    className="w-40 accent-[#C5A059] cursor-pointer"
+                    className="w-40 accent-indigo-600 cursor-pointer"
                   />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-neutral-500">Sort:</span>
+                  <span className="text-gray-400">Sort:</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="bg-black border border-neutral-800 text-xs px-2.5 py-1 text-white focus:outline-none focus:border-[#C5A059] cursor-pointer"
+                    className="bg-[#F8FAFC] border border-gray-205 border-gray-200 text-xs px-2.5 py-1.5 rounded-xl text-gray-805 text-gray-800 focus:outline-none focus:border-indigo-600 cursor-pointer"
                   >
                     <option value="featured">Premium Featured</option>
                     <option value="price-low">Price: Low to High</option>
@@ -809,10 +809,10 @@ export default function App() {
               </div>
             ) : (
               <div className="py-20 text-center space-y-4">
-                <p className="text-neutral-500 text-sm">No corresponding products matching those filter brackets could be indexed.</p>
+                <p className="text-gray-400 text-sm font-medium">No corresponding products matching those filter brackets could be indexed.</p>
                 <button 
                   onClick={() => { setSelectedCategory('all'); setSearchTerm(''); setPriceRange(120000); }} 
-                  className="text-[#C5A059] border border-[#C5A059]/40 bg-[#C5A059]/10 text-xs font-bold uppercase tracking-wider py-2 px-6 hover:bg-[#C5A059] hover:text-black transition-colors"
+                  className="text-indigo-600 border border-indigo-150 bg-indigo-50/50 text-xs font-bold uppercase tracking-wider py-2 px-6 hover:bg-indigo-650 hover:text-white transition-all rounded-xl cursor-pointer shadow-sm"
                 >
                   Reset parameters
                 </button>
@@ -872,38 +872,38 @@ export default function App() {
         {/* CLIENT SHOPPING CART LIST PAGE */}
         {activePage === 'cart' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-            <h2 className="serif text-3xl italic text-white mb-8 border-b border-neutral-900 pb-4">Acquisitions Cart</h2>
+            <h2 className="serif text-3xl italic text-gray-900 mb-8 border-b border-gray-200 pb-4 font-semibold animate-fade-in">Acquisitions Cart</h2>
 
             {cart.length > 0 ? (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 
                 {/* Cart list table on LHS */}
-                <div className="lg:col-span-8 bg-[#141414] border border-neutral-900 rounded p-6 space-y-4">
+                <div className="lg:col-span-8 bg-white border border-gray-200 shadow-md rounded-2xl p-6 space-y-4">
                   {cart.map((item) => (
-                    <div key={item.product.id} className="flex flex-col sm:flex-row gap-6 p-4 bg-black border border-neutral-900 items-start sm:items-center justify-between">
+                    <div key={item.product.id} className="flex flex-col sm:flex-row gap-6 p-4 bg-gray-50 border border-gray-150 rounded-xl items-start sm:items-center justify-between">
                       
                       <div className="flex gap-4 items-center">
-                        <img src={item.product.imageUrl} alt={item.product.name} className="h-14 w-14 object-cover rounded border border-neutral-900 grayscale" />
+                        <img src={item.product.imageUrl} alt={item.product.name} className="h-14 w-14 object-cover rounded-xl border border-gray-200 grayscale-xs" />
                         <div>
-                          <h4 className="text-white text-sm font-semibold hover:text-[#C5A059] transition-colors cursor-pointer" onClick={() => setSelectedProduct(item.product)}>{item.product.name}</h4>
-                          <span className="text-[10px] text-neutral-500 font-mono">SKU: {item.product.sku}</span>
+                          <h4 className="text-gray-900 text-sm font-bold hover:text-indigo-605 transition-colors cursor-pointer" onClick={() => setSelectedProduct(item.product)}>{item.product.name}</h4>
+                          <span className="text-[10px] text-gray-400 font-mono">SKU: {item.product.sku}</span>
                         </div>
                       </div>
 
                       {/* Quantity adjustments */}
                       <div className="flex items-center gap-6">
-                        <div className="flex items-center bg-neutral-950 border border-neutral-900 rounded text-xs select-none">
-                          <button onClick={() => handleUpdateCartQty(item.product.id, item.quantity - 1)} className="px-2.5 py-1 text-neutral-400 hover:text-white transition-colors">-</button>
-                          <span className="px-3 text-white font-semibold font-mono text-[11px]">{item.quantity}</span>
-                          <button onClick={() => handleUpdateCartQty(item.product.id, item.quantity + 1)} className="px-2.5 py-1 text-neutral-400 hover:text-white transition-colors">+</button>
+                        <div className="flex items-center bg-white border border-gray-200 rounded-lg text-xs select-none shadow-xs font-sans">
+                          <button onClick={() => handleUpdateCartQty(item.product.id, item.quantity - 1)} className="px-2.5 py-1.5 text-gray-500 hover:text-indigo-600 transition-colors font-bold cursor-pointer">-</button>
+                          <span className="px-3 text-gray-800 font-semibold font-mono text-[11px]">{item.quantity}</span>
+                          <button onClick={() => handleUpdateCartQty(item.product.id, item.quantity + 1)} className="px-2.5 py-1.5 text-gray-500 hover:text-indigo-600 transition-colors font-bold cursor-pointer">+</button>
                         </div>
 
                         <div className="text-right">
-                          <span className="text-neutral-500 block text-[9px] uppercase tracking-wider font-semibold">Subtotal</span>
-                          <span className="text-[#C5A059] font-mono text-sm font-bold block">Rs. {(item.product.price * item.quantity).toLocaleString()}</span>
+                          <span className="text-gray-450 block text-[9px] uppercase tracking-wider font-semibold text-gray-400">Subtotal</span>
+                          <span className="text-indigo-600 font-mono text-sm font-bold block">Rs. {(item.product.price * item.quantity).toLocaleString()}</span>
                         </div>
 
-                        <button onClick={() => handleRemoveFromCart(item.product.id)} className="text-neutral-500 hover:text-red-400 text-xs uppercase tracking-widest font-bold font-sans">
+                        <button onClick={() => handleRemoveFromCart(item.product.id)} className="text-red-500 hover:text-red-700 text-xs uppercase tracking-widest font-bold font-sans cursor-pointer">
                           Release
                         </button>
                       </div>
@@ -913,33 +913,33 @@ export default function App() {
                 </div>
 
                 {/* Pricing table checkout button card RHS */}
-                <div className="lg:col-span-4 bg-black border border-neutral-900 p-6 space-y-6">
-                  <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Acquisitions Total</h3>
+                <div className="lg:col-span-4 bg-white border border-gray-200 shadow-md rounded-2xl p-6 space-y-6">
+                  <h3 className="text-xs uppercase tracking-widest text-indigo-600 font-bold">Acquisitions Total</h3>
                   
                   <div className="space-y-4 text-xs font-sans">
-                    <div className="flex justify-between py-2 border-b border-neutral-900 text-neutral-400">
+                    <div className="flex justify-between py-2 border-b border-gray-100 text-gray-550">
                       <span>Commodities Subtotal:</span>
-                      <span className="font-mono text-[#E5E5E5]">Rs. {cartSubtotal.toLocaleString()}</span>
+                      <span className="font-mono text-gray-800 font-bold">Rs. {cartSubtotal.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-neutral-900 text-neutral-400">
+                    <div className="flex justify-between py-2 border-b border-gray-100 text-gray-550">
                       <span>Delivery Surcharge:</span>
-                      <strong className="text-green-400 text-[10px] uppercase tracking-wider">Free insured delivery</strong>
+                      <strong className="text-emerald-600 text-[10px] uppercase tracking-wider">Free insured delivery</strong>
                     </div>
                     <div className="flex justify-between py-3 text-sm">
-                      <span className="text-white font-bold uppercase tracking-wider">Sum value:</span>
-                      <span className="text-[#C5A059] text-base font-bold font-mono">
+                      <span className="text-gray-900 font-bold uppercase tracking-wider">Sum value:</span>
+                      <span className="text-indigo-600 text-base font-bold font-mono">
                         Rs. {cartSubtotal.toLocaleString()}
                       </span>
                     </div>
 
-                    <p className="text-[10px] text-neutral-500 leading-relaxed italic border-t border-neutral-900/60 pt-3">
+                    <p className="text-[10px] text-gray-400 leading-relaxed italic border-t border-gray-100 pt-3">
                       * Fully insured secure transit managed directly via private courier lines across Pakistan.
                     </p>
                   </div>
 
                   <button
                     onClick={() => setActivePage('checkout')}
-                    className="w-full bg-[#C5A059] text-black font-bold uppercase tracking-widest text-xs py-3.5 hover:bg-[#DFBA73] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-indigo-600 text-white font-bold uppercase tracking-widest text-xs py-3.5 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 cursor-pointer rounded-xl font-sans"
                   >
                     Proceed with VIP Checkout &rarr;
                   </button>
@@ -1226,14 +1226,14 @@ export default function App() {
                 </div>
 
                 {/* Styled Vector Map Mock Representing Gulberg Lahore */}
-                <div className="border border-neutral-900 rounded p-4 bg-black space-y-3">
-                  <div className="flex justify-between items-center text-[10px] uppercase text-neutral-500 tracking-wider">
+                <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50 space-y-3 font-sans">
+                  <div className="flex justify-between items-center text-[10px] uppercase text-gray-500 tracking-wider">
                     <span>🗺 Gulberg III Visual Vector Plot</span>
-                    <span className="text-green-500 font-bold font-mono">Active</span>
+                    <span className="text-emerald-500 font-bold font-mono">Active</span>
                   </div>
-                  <div className="h-32 bg-neutral-900 rounded flex flex-col items-center justify-center border border-neutral-900">
-                    <span className="text-[11px] font-bold text-[#C5A059] uppercase tracking-wider">Avenzo HQ Landmark</span>
-                    <span className="text-[9px] text-neutral-500 mt-1 font-sans">Main Boulevard &bull; Opposite Pace Mall</span>
+                  <div className="h-32 bg-white rounded-xl flex flex-col items-center justify-center border border-gray-200 shadow-xs">
+                    <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">Avenzo HQ Landmark</span>
+                    <span className="text-[9px] text-gray-400 mt-1 font-sans font-medium">Main Boulevard &bull; Opposite Pace Mall</span>
                   </div>
                 </div>
               </div>

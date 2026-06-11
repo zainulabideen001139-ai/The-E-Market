@@ -71,22 +71,22 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
   const currentStep = searchedRecord ? getActiveStep(searchedRecord.status) : 1;
 
   return (
-    <section className="bg-black border-t border-neutral-900 py-16 font-sans">
+    <section className="bg-[#F8FAFC] border-t border-gray-200 py-16 font-sans">
       <div className="max-w-4xl mx-auto px-4">
         
         {/* Banner with tracking claim */}
         <div className="text-center space-y-3 max-w-2xl mx-auto pb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#C5A059]/10 border border-[#C5A059]/25 text-[#C5A059] text-[9px] uppercase tracking-widest font-mono font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-150 text-indigo-600 text-[9px] uppercase tracking-widest font-mono font-bold rounded-lg">
             🛡️ Secured Logistics System
           </div>
-          <h2 className="serif text-2xl sm:text-3xl italic text-white font-medium">Avenzo Royal Transit & Tracking Hub</h2>
-          <p className="text-neutral-400 text-xs leading-relaxed">
+          <h2 className="serif text-2xl sm:text-3xl italic text-gray-900 font-semibold">Avenzo Royal Transit & Tracking Hub</h2>
+          <p className="text-gray-500 text-xs leading-relaxed">
             Verify shipment status, quality control certificates, and white-glove arrival schedules. Input either your real transaction receipt Order ID or reference.
           </p>
         </div>
 
         {/* Input box */}
-        <div className="bg-[#0D0D0D] border border-neutral-800 p-6 rounded-sm max-w-xl mx-auto">
+        <div className="bg-white border border-gray-200 p-6 rounded-2xl max-w-xl mx-auto shadow-md">
           <form onSubmit={handleTrackSubmit} className="flex gap-2">
             <input
               type="text"
@@ -94,46 +94,46 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               placeholder="e.g., AVN-2CO-4892-KHI or order id..."
-              className="bg-black border border-neutral-800 text-xs px-4 py-3 text-white flex-1 focus:outline-none focus:border-[#C5A059] uppercase tracking-wider font-mono"
+              className="bg-[#F8FAFC] border border-gray-205 border-gray-250 border-gray-200 text-xs px-4 py-3 text-gray-800 flex-1 focus:outline-none focus:border-indigo-600 uppercase tracking-wider font-mono rounded-xl"
             />
             <button
               type="submit"
-              className="bg-[#C5A059] text-black font-bold uppercase text-[10px] tracking-widest px-6 hover:bg-[#DFBA73] transition-colors flex items-center justify-center gap-1 cursor-pointer"
+              className="bg-indigo-600 text-white font-bold uppercase text-[10px] tracking-widest px-6 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1 cursor-pointer rounded-xl shadow-sm"
             >
               <Search size={12} /> Track
             </button>
           </form>
 
           {errorMessage && (
-            <p className="text-red-400 text-[11px] mt-3 font-sans leading-relaxed">
+            <p className="text-red-600 text-[11px] mt-3 font-sans leading-relaxed">
               ⚠️ {errorMessage}
             </p>
           )}
 
           {/* Quick instructions indicator */}
-          <div className="flex items-center justify-between mt-3 text-[9px] font-mono text-neutral-500 border-t border-neutral-900/60 pt-2.5">
+          <div className="flex items-center justify-between mt-3 text-[9px] font-mono text-gray-400 border-t border-gray-100 pt-2.5">
             <span>Security protocol: SSL Encrypted</span>
-            <span className="text-neutral-400">Supports AVN-* references</span>
+            <span className="text-gray-500">Supports AVN-* references</span>
           </div>
         </div>
 
         {/* Stepper visualizer card if active search results */}
         {searchedRecord && (
-          <div className="mt-8 bg-[#0D0D0D] border border-[#C5A059]/20 p-6 sm:p-8 rounded-sm animate-scale-up space-y-8">
+          <div className="mt-8 bg-white border border-gray-200 p-6 sm:p-8 rounded-2xl animate-scale-up space-y-8 shadow-lg">
             
             {/* Context metadata table */}
-            <div className="flex flex-col sm:flex-row justify-between border-b border-neutral-900 pb-5 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between border-b border-gray-100 pb-5 gap-4">
               <div className="space-y-1">
-                <span className="text-[#C5A059] font-mono text-[9px] uppercase tracking-widest font-bold block">
+                <span className="text-indigo-600 font-mono text-[9px] uppercase tracking-widest font-bold block">
                   Consignment Verified {searchedRecord.isReal ? "✓ (Database Match)" : "✓ (Demonstration Mode)"}
                 </span>
-                <h3 className="text-white font-mono text-sm uppercase tracking-wider font-semibold">
-                  Ref: <span className="text-[#C5A059]">{searchedRecord.id}</span>
+                <h3 className="text-gray-900 font-mono text-sm uppercase tracking-wider font-bold">
+                  Ref: <span className="text-indigo-600">{searchedRecord.id}</span>
                 </h3>
               </div>
-              <div className="text-xs sm:text-right text-neutral-400 font-sans space-y-0.5">
-                <div>Client: <strong className="text-white">{searchedRecord.customerName}</strong></div>
-                <div>Transit Address: <span className="italic block text-[10px]">{searchedRecord.shippingAddress}, {searchedRecord.city}</span></div>
+              <div className="text-xs sm:text-right text-gray-500 font-sans space-y-0.5 font-medium">
+                <div>Client: <strong className="text-gray-900">{searchedRecord.customerName}</strong></div>
+                <div>Transit Address: <span className="italic block text-[10px] text-gray-600">{searchedRecord.shippingAddress}, {searchedRecord.city}</span></div>
               </div>
             </div>
 
@@ -141,9 +141,9 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
             <div className="relative pt-4 pb-2">
               
               {/* Stepper horizontal pipeline track behind elements */}
-              <div className="absolute top-[34px] left-10 right-10 h-0.5 bg-neutral-900 z-0">
+              <div className="absolute top-[34px] left-10 right-10 h-0.5 bg-gray-100 z-0">
                 <div 
-                  className="bg-[#C5A059] h-full transition-all duration-700" 
+                  className="bg-indigo-600 h-full transition-all duration-700" 
                   style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
                 ></div>
               </div>
@@ -155,14 +155,14 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
                 <div className="space-y-2.5">
                   <div className={`h-10 w-10 mx-auto rounded-full flex items-center justify-center border transition-all ${
                     currentStep >= 1 
-                      ? 'bg-black border-[#C5A059] text-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.3)]' 
-                      : 'bg-[#141414] border-neutral-800 text-neutral-600'
+                      ? 'bg-white border-indigo-650 border-indigo-600 text-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.15)] font-bold' 
+                      : 'bg-gray-50 border-gray-200 text-gray-400'
                   }`}>
                     <CheckCircle2 size={18} />
                   </div>
                   <div>
-                    <span className="text-white block font-bold uppercase tracking-wider text-[9px]">Verified</span>
-                    <span className="text-[9px] text-neutral-500 block">Payment Authed</span>
+                    <span className="text-gray-900 block font-bold uppercase tracking-wider text-[9px]">Verified</span>
+                    <span className="text-[9px] text-gray-400 block">Payment Authed</span>
                   </div>
                 </div>
 
@@ -170,14 +170,14 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
                 <div className="space-y-2.5">
                   <div className={`h-10 w-10 mx-auto rounded-full flex items-center justify-center border transition-all ${
                     currentStep >= 2 
-                      ? 'bg-black border-[#C5A059] text-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.3)]' 
-                      : 'bg-[#141414] border-neutral-800 text-neutral-600'
+                      ? 'bg-white border-indigo-650 border-indigo-600 text-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.15)] font-bold' 
+                      : 'bg-gray-50 border-gray-200 text-gray-400'
                   }`}>
                     <ShieldCheck size={18} />
                   </div>
                   <div>
-                    <span className="text-white block font-bold uppercase tracking-wider text-[9px]">QC Checklist</span>
-                    <span className="text-[9px] text-neutral-500 block">Premium Casing</span>
+                    <span className="text-gray-900 block font-bold uppercase tracking-wider text-[9px]">QC Checklist</span>
+                    <span className="text-[9px] text-gray-400 block">Premium Casing</span>
                   </div>
                 </div>
 
@@ -185,14 +185,14 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
                 <div className="space-y-2.5">
                   <div className={`h-10 w-10 mx-auto rounded-full flex items-center justify-center border transition-all ${
                     currentStep >= 3 
-                      ? 'bg-black border-[#C5A059] text-[#C5A059] shadow-[0_0_8px_rgba(197,160,89,0.3)]' 
-                      : 'bg-[#141414] border-neutral-800 text-neutral-600'
+                      ? 'bg-white border-indigo-650 border-indigo-600 text-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.15)] font-bold' 
+                      : 'bg-gray-50 border-gray-200 text-gray-400'
                   }`}>
                     <Truck size={18} />
                   </div>
                   <div>
-                    <span className="text-white block font-bold uppercase tracking-wider text-[9px]">En Route</span>
-                    <span className="text-[9px] text-neutral-500 block">Insured Transit</span>
+                    <span className="text-gray-900 block font-bold uppercase tracking-wider text-[9px]">En Route</span>
+                    <span className="text-[9px] text-gray-400 block">Insured Transit</span>
                   </div>
                 </div>
 
@@ -200,14 +200,14 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
                 <div className="space-y-2.5">
                   <div className={`h-10 w-10 mx-auto rounded-full flex items-center justify-center border transition-all ${
                     currentStep >= 4 
-                      ? 'bg-black border-green-500 text-green-400 shadow-[0_0_8px_rgba(34,197,94,0.3)]' 
-                      : 'bg-[#141414] border-neutral-800 text-neutral-600'
+                      ? 'bg-emerald-50 border-emerald-500 text-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.15)] font-bold' 
+                      : 'bg-gray-50 border-gray-200 text-gray-400'
                   }`}>
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <span className="text-white block font-bold uppercase tracking-wider text-[9px]">Delivered</span>
-                    <span className="text-[9px] text-neutral-500 block">White-Glove VIP</span>
+                    <span className="text-gray-900 block font-bold uppercase tracking-wider text-[9px]">Delivered</span>
+                    <span className="text-[9px] text-gray-400 block">White-Glove VIP</span>
                   </div>
                 </div>
 
@@ -215,27 +215,27 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
             </div>
 
             {/* Detailed transit logs block */}
-            <div className="bg-black/95 p-4 border border-neutral-900 rounded font-mono text-[9px] text-neutral-400 space-y-2">
-              <span className="text-neutral-500 uppercase tracking-widest font-bold block pb-1 border-b border-neutral-900/60 font-sans">
+            <div className="bg-[#F8FAFC] p-4 border border-gray-200 rounded-xl font-mono text-[9px] text-gray-500 space-y-2">
+              <span className="text-gray-500 uppercase tracking-widest font-bold block pb-1 border-b border-gray-200/60 font-sans">
                 📋 Dynamic Live Logistics Trace logs
               </span>
-              <div className="space-y-1 font-sans">
+              <div className="space-y-1 font-sans font-medium">
                 <div className="flex gap-2">
-                  <span className="text-[#C5A059] shrink-0 font-bold font-mono">10:42 AM</span>
-                  <span>En-route checking completed by Avenzo Security Quality Auditors in Gulberg Labs.</span>
+                  <span className="text-indigo-600 shrink-0 font-bold font-mono">10:42 AM</span>
+                  <span className="text-gray-600">En-route checking completed by Avenzo Security Quality Auditors in Gulberg Labs.</span>
                 </div>
                 <div className="flex gap-2">
-                  <span className="text-[#C5A059] shrink-0 font-bold font-mono">11:15 AM</span>
-                  <span>Sealed inside customized, waterproof, padded double-layered cases with stamp tag #00120.</span>
+                  <span className="text-indigo-600 shrink-0 font-bold font-mono">11:15 AM</span>
+                  <span className="text-gray-600">Sealed inside customized, waterproof, padded double-layered cases with stamp tag #00120.</span>
                 </div>
                 {currentStep >= 3 && (
-                  <div className="flex gap-2 text-[#C5A059]">
-                    <span className="shrink-0 font-bold font-mono">01:30 PM</span>
+                  <div className="flex gap-2 text-indigo-700">
+                    <span className="text-indigo-600 shrink-0 font-bold font-mono">01:30 PM</span>
                     <span>Dispatched across metropolitan expressway via insured premium transit fleet.</span>
                   </div>
                 )}
                 {currentStep >= 4 && (
-                  <div className="flex gap-2 text-green-400">
+                  <div className="flex gap-2 text-emerald-650 text-emerald-600">
                     <span className="shrink-0 font-bold font-mono">✓ ARRIVED</span>
                     <span>Signature confirmed by VIP recipient. Luxury inventory delivered in absolute physical health.</span>
                   </div>
@@ -244,13 +244,13 @@ export const AvenzoTransitTracker: React.FC<AvenzoTransitTrackerProps> = ({ orde
             </div>
 
             {/* Assistance warning */}
-            <div className="flex flex-col sm:flex-row justify-between items-center bg-[#141414] p-3.5 border border-neutral-900 gap-3 text-xs text-neutral-400">
-              <span className="text-[11px] leading-relaxed text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-50 p-4 border border-gray-200 gap-3 text-xs text-gray-550 text-gray-500 rounded-xl">
+              <span className="text-[11px] leading-relaxed text-center sm:text-left text-gray-600 font-medium">
                 Require direct logistic modifications or premium schedule adjustments? Our VIP Courier team is active.
               </span>
               <a 
                 href="mailto:support@avenzo.pk?subject=Logistic Assist request" 
-                className="bg-black border border-neutral-800 hover:border-[#C5A059] text-[#C5A059] text-[10px] uppercase font-bold tracking-widest px-4 py-2 flex items-center gap-1.5 whitespace-nowrap transition-colors"
+                className="bg-white border border-gray-200 hover:border-indigo-600 text-indigo-600 text-[10px] uppercase font-bold tracking-widest px-4 py-2.5 flex items-center gap-1.5 whitespace-nowrap transition-all rounded-xl shadow-xs"
               >
                 <Mail size={12} /> Contact Logistics
               </a>

@@ -19,22 +19,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
   return (
-    <div className="bg-[#141414] border border-neutral-900 group relative flex flex-col justify-between overflow-hidden transition-all duration-300 hover:border-[#C5A059]/40 animate-fade-in">
+    <div className="bg-white border border-gray-200 group relative flex flex-col justify-between overflow-hidden transition-all duration-300 hover:border-indigo-200 rounded-2xl shadow-sm hover:shadow animate-fade-in">
       
       {/* Top Banner Tags & Wishlist Toggle */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 font-sans">
           {product.isFeatured && (
-            <span className="bg-[#C5A059] text-black text-[9px] font-bold tracking-widest px-2.5 py-0.5 uppercase rounded-sm">
+            <span className="bg-indigo-600 text-white text-[9px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-lg">
               Featured Edition
             </span>
           )}
           {isOutOfStock ? (
-            <span className="bg-red-600/90 text-white text-[9px] font-bold tracking-widest px-2.5 py-0.5 uppercase rounded-sm">
+            <span className="bg-red-50 text-red-600 border border-red-200 text-[9px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-lg">
               Out of Stock
             </span>
           ) : isLowStock ? (
-            <span className="bg-amber-600/90 text-white text-[9px] font-semibold tracking-widest px-2.5 py-0.5 uppercase rounded-sm flex items-center gap-1">
+            <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-semibold tracking-widest px-2.5 py-1 uppercase rounded-lg flex items-center gap-1">
               <Zap size={10} /> Limited: {product.stock} left
             </span>
           ) : null}
@@ -47,8 +47,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
           className={`p-2 rounded-full border transition-all ${
             isWishlisted 
-              ? 'bg-[#C5A059] border-[#C5A059] text-black' 
-              : 'bg-black/75 border-neutral-800 text-neutral-400 hover:text-white hover:border-[#C5A059]'
+              ? 'bg-indigo-600 border-indigo-650 text-white' 
+              : 'bg-white/95 border-gray-200 text-gray-400 hover:text-indigo-600 hover:border-indigo-600 shadow-sm'
           }`}
           title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         >
@@ -59,20 +59,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Main Image Stage */}
       <div 
         onClick={() => onSelect(product)}
-        className="relative aspect-video sm:aspect-square w-full bg-neutral-950 overflow-hidden cursor-pointer"
+        className="relative aspect-video sm:aspect-square w-full bg-gray-50 overflow-hidden cursor-pointer"
         id={`product-card-${product.id}`}
       >
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-90"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
         />
         {/* Hover overlay with CTA */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-gray-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
           <button
             onClick={(e) => { e.stopPropagation(); onSelect(product); }}
-            className="flex items-center gap-2 bg-white text-black font-semibold text-xs py-2 px-5 rounded-sm hover:bg-[#C5A059] hover:text-black transition-all transform translate-y-4 group-hover:translate-y-0 duration-300"
+            className="flex items-center gap-2 bg-indigo-600 text-white font-bold text-xs py-2.5 px-6 rounded-xl hover:bg-indigo-700 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-md"
           >
             <Eye size={13} /> View Details
           </button>
@@ -80,40 +80,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Bottom Product Details */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-black">
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-white">
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-[10px] text-neutral-500 font-mono tracking-wider">
+          <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono tracking-wider">
             <span>SKU: {product.sku}</span>
             <div className="flex items-center gap-1">
-              <Star size={11} className="fill-[#C5A059] text-[#C5A059]" />
-              <span className="text-neutral-300">{product.rating}</span>
+              <Star size={11} className="fill-amber-400 text-amber-400" />
+              <span className="text-gray-600">{product.rating}</span>
             </div>
           </div>
           
           <h3 
             onClick={() => onSelect(product)}
-            className="text-white hover:text-[#C5A059] text-sm sm:text-base font-semibold tracking-wide truncate cursor-pointer transition-colors"
+            className="text-gray-950 hover:text-indigo-600 text-sm sm:text-base font-bold tracking-wide truncate cursor-pointer transition-colors"
           >
             {product.name}
           </h3>
           
-          <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed font-sans">
+          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans">
             {product.description}
           </p>
         </div>
 
         {/* Pricing tag & immediate detail redirect */}
-        <div className="flex items-center justify-between pt-4 mt-3 border-t border-neutral-900">
-          <div className="flex flex-col">
-            <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-medium">PKR Price</span>
-            <span className="text-[#C5A059] text-base font-bold font-mono">
+        <div className="flex items-center justify-between pt-4 mt-3 border-t border-gray-100">
+          <div className="flex flex-col font-sans">
+            <span className="text-[9px] uppercase tracking-widest text-indigo-500 font-bold">PKR Price</span>
+            <span className="text-indigo-600 text-base font-bold font-mono">
               Rs. {product.price.toLocaleString()}
             </span>
           </div>
           
           <button
             onClick={() => onSelect(product)}
-            className="text-[10px] font-semibold text-neutral-400 group-hover:text-[#C5A059] transition-colors flex items-center gap-0.5 tracking-widest uppercase border-b border-transparent group-hover:border-[#C5A059] pb-0.5"
+            className="text-[10px] font-bold text-gray-400 group-hover:text-indigo-600 transition-colors flex items-center gap-0.5 tracking-widest uppercase border-b border-transparent group-hover:border-indigo-600 pb-0.5"
           >
             Invest <ArrowRight size={12} className="ml-0.5 group-hover:translate-x-1 transition-transform" />
           </button>

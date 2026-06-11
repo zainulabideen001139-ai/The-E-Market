@@ -11,11 +11,11 @@
 
 /* Custom premium variables and styling elements */
 :root {
-  --gold-accent: #C5A059;
-  --gold-hover: #DFBA73;
-  --bg-dark: #0A0A0A;
-  --bg-paper: #141414;
-  --border-gold: rgba(197, 160, 89, 0.25);
+  --indigo-accent: #4f46e5;
+  --indigo-hover: #4338ca;
+  --bg-light: #f8fafc;
+  --bg-paper: #ffffff;
+  --border-indigo: rgba(79, 70, 229, 0.15);
 }
 
 /* Customized thin premium scrollbar */
@@ -44,13 +44,13 @@
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.gold-border-glow {
-  box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.15);
+.indigo-border-glow {
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.1);
   transition: all 0.3s ease;
 }
 
-.gold-border-glow:hover {
-  box-shadow: 0 0 12px 1px rgba(197, 160, 89, 0.35);
-  border-color: #C5A059;
+.indigo-border-glow:hover {
+  box-shadow: 0 0 12px 1px rgba(79, 70, 229, 0.2);
+  border-color: #4f46e5;
 }
 
