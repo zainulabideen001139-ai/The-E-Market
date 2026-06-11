@@ -24,14 +24,14 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #C5A059;
+  background: #94a3b8;
 }
 
 /* Animations helper */
