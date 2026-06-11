@@ -730,50 +730,7 @@ app.post('/api/orders', (req, res) => {
   res.status(201).json({ order: newOrder, EmailSimulated: emailMessage });
 });
 
-app.post('/api/payment/2checkout/create-session', (req, res) => {
-  const { customerName, customerEmail, customerPhone, shippingAddress, city, items, totalAmount } = req.body;
 
-  if (!customerName || !customerEmail || !customerPhone || !shippingAddress || !city || !items || items.length === 0) {
-    return res.status(400).json({ error: 'Incomplete client context or cart payload for Verifone signature.' });
-  }
-
-  // Verify and ensure product stock exists
-  for (const item of items) {
-    const product = DATA_STORE.products.find(p => p.id === item.product.id);
-    if (!product || product.stock < item.quantity) {
-      return res.status(400).json({ 
-        error: `Limited Luxury Reserves. Stock verification failed for ${product ? product.name : 'curated selection'}.` 
-      });
-    }
-  }
-
-  const sellerId = process.env.VERIFONE_SELLER_ID || '250112345';
-  const secretKey = process.env.VERIFONE_SECRET_KEY || 'AvenzoVerifoneSecretKey2026';
-  const orderRef = 'AVN-2CO-' + Math.floor(1000 + Math.random() * 9000) + '-' + ['LH', 'KHI', 'ISD', 'PE'][Math.floor(Math.random() * 4)];
-  const currency = 'PKR';
-
-  // Generate cryptographically secure signature hash (HMAC-SHA256) standard to 2Checkout / Verifone hosted integrations
-  const signaturePayload = `${sellerId}${orderRef}${totalAmount}${currency}`;
-  const hmac = crypto.createHmac('sha256', secretKey);
-  hmac.update(signaturePayload);
-  const signature = hmac.digest('hex');
-
-  res.status(200).json({
-    sellerId,
-    orderRef,
-    totalAmount: Number(totalAmount),
-    currency,
-    signature,
-    timestamp: Date.now(),
-    customerDetails: {
-      customerName,
-      customerEmail,
-      customerPhone,
-      shippingAddress,
-      city
-    }
-  });
-});
 
 app.put('/api/orders/:id', (req, res) => {
   const { id } = req.params;

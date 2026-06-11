@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { CartItem, Product } from '../types';
 import { CreditCard, CheckCircle2, ShieldAlert, BookOpen, Lock, Tag, Landmark, Smartphone, MessageSquare, ShieldCheck, RefreshCw, Globe, ArrowRight, CornerDownRight } from 'lucide-react';
-import { VerifoneCheckoutGatewaySimulator } from './VerifoneCheckoutGatewaySimulator';
 
 interface CheckoutPageProps {
   cart: CartItem[];
@@ -30,13 +29,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [discountPercent, setDiscountPercent] = useState(0);
 
   // Payment states
-  const [paymentMethod, setPaymentMethod] = useState<'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa' | 'Stripe' | 'PayPal' | 'Verifone (2Checkout)'>('Cash on Delivery');
+  const [paymentMethod, setPaymentMethod] = useState<'Cash on Delivery' | 'Bank Transfer' | 'JazzCash' | 'Easypaisa'>('Cash on Delivery');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<any | null>(null);
   const [simulatedEmail, setSimulatedEmail] = useState<any | null>(null);
-
-  // Verifone Hosted Session State
-  const [verifoneSession, setVerifoneSession] = useState<any | null>(null);
 
   // Credit Card mock inputs
   const [cardNo, setCardNo] = useState('');
@@ -78,59 +74,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     }
 
     setIsSubmitting(true);
-
-    if (paymentMethod === 'Verifone (2Checkout)') {
-      try {
-        let session = null;
-        try {
-          const resp = await fetch('/api/payment/2checkout/create-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              customerName: name,
-              customerEmail: email,
-              customerPhone: phone,
-              shippingAddress: address,
-              city,
-              items: cart,
-              totalAmount: totalInvoicedAmount,
-            }),
-          });
-
-          if (resp.ok) {
-            session = await resp.json();
-          }
-        } catch (e) {
-          console.log('Using local offline fallback for Verifone Checkout');
-        }
-
-        if (!session) {
-          session = {
-            sellerId: '250112345',
-            orderRef: 'AVN-2CO-' + Math.floor(1000 + Math.random() * 9000) + '-' + ['LH', 'KHI', 'ISD', 'PE'][Math.floor(Math.random() * 4)],
-            totalAmount: totalInvoicedAmount,
-            currency: 'PKR',
-            signature: 'local-simulated-signature-hash-' + Math.random().toString(36).substring(7),
-            timestamp: Date.now(),
-            customerDetails: {
-              customerName: name,
-              customerEmail: email,
-              customerPhone: phone,
-              shippingAddress: address,
-              city
-            }
-          };
-        }
-
-        setVerifoneSession(session);
-      } catch (err: any) {
-        console.error(err);
-        alert(err.message || 'Verifone (2Checkout) Initialization failed on secure channels.');
-      } finally {
-        setIsSubmitting(false);
-      }
-      return;
-    }
     
     const payload = {
       customerName: name,
@@ -250,50 +193,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     );
   }
 
-  // VERIFONE (2CHECKOUT) INTERACTIVE SECURE GATEWAY OVERLAY
-  if (verifoneSession) {
-    return (
-      <VerifoneCheckoutGatewaySimulator
-        session={verifoneSession}
-        cartSubtotal={cartSubtotal}
-        discountPercent={discountPercent}
-        calculatedDiscount={calculatedDiscount}
-        deliverySurcharge={deliverySurcharge}
-        totalInvoicedAmount={totalInvoicedAmount}
-        onCancel={() => setVerifoneSession(null)}
-        onPaymentSuccess={async (paymentResult) => {
-          const payload = {
-            customerName: name,
-            customerEmail: email,
-            customerPhone: phone,
-            shippingAddress: address,
-            city,
-            items: cart,
-            totalAmount: totalInvoicedAmount,
-            paymentMethod: 'Verifone (2Checkout)' as any,
-            notes: `Verifone (2Checkout) Authid: ${paymentResult.transactionId} | Seller Session Ref: ${verifoneSession.orderRef}`
-          };
-
-          try {
-            const resp = await onSubmitOrder(payload);
-            if (resp && resp.order) {
-              setCompletedOrder(resp.order);
-              if (resp.EmailSimulated) {
-                setSimulatedEmail(resp.EmailSimulated);
-              }
-              onClearCart();
-            }
-          } catch (err) {
-            console.error(err);
-            alert('Transaction completed but order filing on backend database timed out.');
-          } finally {
-            setVerifoneSession(null);
-          }
-        }}
-      />
-    );
-  }
-
   // CART IS EMPTY SCREEN
   if (cart.length === 0) {
     return (
@@ -397,11 +296,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
             {/* PAYMENT METHODS SELECTOR CARD */}
             <div className="border-t border-neutral-900 pt-6 space-y-4">
               <div>
-                <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">2. Select Imperial Payment Gateway</h3>
-                <p className="text-[11px] text-neutral-400 mt-0.5">Choose Cash on Delivery, Wallet billing, or securely register simulated Cards.</p>
+                <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">2. Select Imperial Payment Method</h3>
+                <p className="text-[11px] text-neutral-400 mt-0.5">Please select Cash on Delivery or offline Bank Wire Transfer to checkout instantly.</p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('Cash on Delivery')}
@@ -454,80 +353,23 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   <span className="text-[10px] uppercase tracking-wider font-semibold">Easypaisa Wallet</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('Stripe')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
-                    paymentMethod === 'Stripe' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white'
-                  }`}
+                <div
+                  className="border border-neutral-900 bg-[#1e140d]/25 p-3.5 flex flex-col justify-between h-20 text-left rounded-sm relative opacity-60 cursor-not-allowed select-none"
+                  title="Online Processing under standard maintenance"
                 >
-                  <CreditCard size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">Stripe (Card Gateway)</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('Verifone (2Checkout)')}
-                  className={`border p-3.5 flex flex-col justify-between h-20 text-left rounded-sm transition-all ${
-                    paymentMethod === 'Verifone (2Checkout)' 
-                      ? 'border-[#C5A059] bg-[#C5A059]/10 text-white font-semibold' 
-                      : 'border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
-                  }`}
-                >
-                  <CreditCard className="text-[#C5A059]" size={16} />
-                  <span className="text-[10px] uppercase tracking-wider font-semibold">Verifone (2Checkout)</span>
-                </button>
+                  <CreditCard size={16} className="text-orange-400/80" />
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 block leading-tight">Card Channels</span>
+                    <span className="text-[8px] text-[#C5A059] font-bold">COMING SOON</span>
+                  </div>
+                </div>
               </div>
 
               {/* DYNAMIC PAYMENT PARAMETERS */}
-              {paymentMethod === 'Verifone (2Checkout)' && (
-                <div className="bg-neutral-950 p-4 border border-[#C5A059]/20 rounded space-y-3">
-                  <div className="flex justify-between items-center text-[10px] text-neutral-500 uppercase font-mono tracking-wider">
-                    <span className="text-white flex items-center gap-1">💳 Verifone (2Checkout) Secure Portal</span>
-                    <span className="text-green-500 font-bold flex items-center gap-1">● Redirection Ready</span>
-                  </div>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
-                    Upon clicking authorize, our system will generate secure cryptographic signatures and redirect you to the official **Verifone (2Checkout) Hosted Billing Gateway**. This channel fully handles instant purchases via local or international **Visa, MasterCard, American Express**, or credit lines.
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-neutral-900/60 pt-2 text-[9px] text-[#C5A059] font-mono">
-                    <span className="bg-black border border-neutral-800 px-2 py-0.5 whitespace-nowrap text-neutral-400">Merchant Code: Active</span>
-                    <span className="bg-black border border-[#C5A059]/20 px-2 py-0.5 whitespace-nowrap">&bull; Visa Accepted</span>
-                    <span className="bg-black border border-[#C5A059]/20 px-2 py-0.5 whitespace-nowrap">&bull; MasterCard Accepted</span>
-                    <span className="bg-black border border-[#C5A059]/20 px-2 py-0.5 whitespace-nowrap">&bull; Amex Accepted</span>
-                  </div>
-                </div>
-              )}
-
-              {paymentMethod === 'Stripe' && (
-                <div className="bg-neutral-950 p-4 border border-neutral-800 rounded space-y-3">
-                  <div className="flex justify-between items-center text-[10px] text-neutral-500 uppercase font-mono tracking-wider">
-                    <span>💳 Sandbox Secured Credit Card Processing</span>
-                    <span className="text-amber-500 font-bold">Simulator Active</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="sm:col-span-2">
-                      <label className="text-[9px] uppercase text-neutral-500">Credit Card Number</label>
-                      <input
-                        type="text"
-                        value={cardNo}
-                        onChange={(e) => setCardNo(e.target.value)}
-                        className="bg-[#0A0A0A] border border-neutral-800 p-2 text-xs text-white w-full text-center mt-1 focus:outline-none focus:border-[#C5A059]"
-                        placeholder="4242 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] uppercase text-neutral-500">Expiry MM/YY</label>
-                      <input
-                        type="text"
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        className="bg-[#0A0A0A] border border-neutral-800 p-2 text-xs text-white w-full text-center mt-1 focus:outline-none focus:border-[#C5A059]"
-                        placeholder="12/28"
-                      />
-                    </div>
-                  </div>
+              {paymentMethod === 'Cash on Delivery' && (
+                <div className="bg-neutral-950 p-4 border border-neutral-800 rounded space-y-2 text-xs text-neutral-400">
+                  <span className="text-white font-bold uppercase tracking-wide block">Cash on Delivery Verification</span>
+                  <p>Pay with cash directly to our logistics rep upon receiving your premium luxury consignment. Shipping and packing will be dispatched inside 24 hours.</p>
                 </div>
               )}
 
